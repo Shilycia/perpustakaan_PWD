@@ -1,0 +1,64 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Kaos Polos Premium",
+      "category": "Kaos",
+      "price": 99000,
+      "originalPrice": 150000,
+      "discount": 34,
+      "color": ["Hitam", "Putih", "Navy"],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": 25,
+      "rating": 4.8,
+      "reviewCount": 124,
+      "image": "https://picsum.photos/id/20/300/300",
+      "description": "Kaos polos cotton combed 30s, nyaman dipakai sehari-hari"
+    },
+    {
+      "id": 2,
+      "name": "Kemeja Flanel Pria",
+      "category": "Kemeja",
+      "price": 189000,
+      "originalPrice": 250000,
+      "discount": 24,
+      "color": ["Merah Kotak", "Biru Kotak", "Hitam"],
+      "sizes": ["M", "L", "XL"],
+      "stock": 12,
+      "rating": 4.6,
+      "reviewCount": 89,
+      "image": "https://picsum.photos/id/21/300/300",
+      "description": "Kemeja flanel bahan tebal, cocok untuk gaya kasual"
+    },
+    {
+      "id": 3,
+      "name": "Jaket Denim Oversized",
+      "category": "Jaket",
+      "price": 299000,
+      "originalPrice": 400000,
+      "discount": 25,
+      "color": ["Biru Tua", "Hitam"],
+      "sizes": ["L", "XL", "XXL"],
+      "stock": 8,
+      "rating": 4.9,
+      "reviewCount": 56,
+      "image": "https://picsum.photos/id/22/300/300",
+      "description": "Jaket denim model oversized, trendi dan kekinian"
+    },
+    {
+      "id": 4,
+      "name": "Hoodie Distro",
+      "category": "Hoodie",
+      "price": 159000,
+      "originalPrice": 200000,
+      "discount": 20,
+      "color": ["Abu-abu", "Hitam", "Cream"],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": 30,
+      "rating": 4.7,
+      "reviewCount": 203,
+      "image": "https://picsum.photos/id/23/300/300",
+      "description": "Hoodie dengan bahan cotton fleece, hangat dan nyaman"
+    }   
+  ]
+}
