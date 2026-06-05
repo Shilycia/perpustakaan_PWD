@@ -3,18 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
+  <title>Register - Desktop</title>
+  
+  <link rel="stylesheet" href="../index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link href="https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.2.5/index.css" rel="stylesheet">
+  
   <style>
+    * {
+      font-family: 'Geist Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Geist Sans';
+      height: 100vh;
+      background-color: #1a1d21; 
+      display: flex;
+      flex-direction: column;
     }
   </style>
-  <link rel="stylesheet" href="./index.css">
 </head>
 <body>
-  
-
+  <div class="auth-page">
+    <div class="main-gradient">
+      <div class="login-card">
+        <div class="vibes-logo">
+          <img src="../../public/logo-putih.png" alt="VIBES">
+        </div>
+        <div class="subtitle">Silahkan masukan data anda untuk membuat akun</div>
+        <form action="#" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <div class="input-wrapper">
+              <input type="text" name="username" id="username" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="Email">Email</label>
+            <div class="input-wrapper">
+              <input type="text" name="Email" id="Email" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+              <input type="password" name="password" id="password">
+              <i class="fa-solid fa-eye-slash eye-icon" id="togglePassword"></i>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm password</label>
+            <div class="input-wrapper">
+              <input type="password" name="confirmPassword" id="confirmPassword">
+              <i class="fa-solid fa-eye-slash eye-icon" id="toggleConfirmPassword"></i>
+            </div>
+          </div>
+          <div class="extra-links">
+            <a href="./login.html">Sudah Punya Akun?</a>
+          </div>
+          <button type="submit" class="auth-btn">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    function setupPasswordToggle(inputFieldId, iconId) {
+      const passwordInput = document.getElementById(inputFieldId);
+      const eyeIcon = document.getElementById(iconId);
+      eyeIcon.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+      });
+    }
+    setupPasswordToggle('password', 'togglePassword');
+    setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
+  </script>
 </body>
 </html>
