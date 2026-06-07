@@ -7,19 +7,408 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
   <link href="https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.2.5/index.css" rel="stylesheet">
   <style>
-    body {
+    body, html {
       font-family: 'Geist Sans';
+      max-width: 100vw;     
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    :root {
+      --primary: #A30000;
+      --secondary: #E5BEB7;
+      --fg-second: #5E5E5E;
+    }
+
+    .customRange {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Background yang mengikuti (progress) */
+    .customRange {
+      background: linear-gradient(to right, var(--primary) 0%, var(--primary) 0%, #e5e7eb 0%, #e5e7eb 100%);
+    }
+
+    /* Thumb (bullet) */
+    .customRange::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: transform 0.1s ease;
+    }
+
+    .customRange::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .customRange::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: white;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* Firefox progress */
+    .customRange::-moz-range-track {
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 4px;
+    }
+
+    .customRange::-moz-range-progress {
+      height: 4px;
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    /* Price display */
+    .priceDisplay {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .priceMin, .priceMax {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .priceSeparator {
+      color: var(--fg-second);
+    }
+
+    /* Value wrapper */
+    .priceValueWrapper {
+      background: #f5f5f5;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .priceValue {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .priceLabel {
+      font-size: 0.7rem;
+      color: var(--fg-second);
+      margin-top: 0.25rem;
+    }    
+
+    select:focus {
+      outline: none;
+    }    
+
+    .opsi{
+      background: white;
+      color: #333;
+      padding: 0.5rem;
+    }
+   
+    .menuOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      display: none;      
+    }
+
+    .menuOverlay.show {
+      display: block;
+    }
+    
+    #slideBar.show{      
+      transform: translateX(0);      
+    }
+
+    @media (max-width: 767px) {
+      #slideBar{
+        position: fixed;
+        transform: translateX(-88%);
+        transition: transform 0.3s ease;
+        z-index: 50;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+      }
+
+      #shopSidebar {
+        height: 100%;
+        overflow-y: auto; /* ← biar scroll di sini */
+        padding-bottom: 10rem;
+      }
+    }
+
+    .subTitle{
+      margin: 0.5rem 0;
     }
   </style>
   <link rel="stylesheet" href="../index.css">
 </head>
 <body>
 
-  <nav class="navbar" ></nav>
+<div class=" w-full flex " style="height: calc(100vh - 4rem);">
+
+  <div class="flex lg:w-4/20 md:w-1/3 max-md:w-4/5  h-full" id="slideBar">      
+    <div id="shopSidebar" class="bg-white px-2 overflow-y-auto h-full">
+      <p class="subTitle">Category</p>
+      <ul class="flex flex-col gap-2 py-2 border-b-1 border-[#E5BEB7]">
+        <li><a href="#" class="btnCat">Outerwear</a><span id="sumOuterwear"></span></li>
+        <li><a href="#" class="btnCat">Tops</a><span id="sumTops"></span></li>
+        <li><a href="#" class="btnCat">Bottoms</a><span id="sumBottoms"></span></li>
+        <li><a href="#" class="btnCat">Footwear</a><span id="sumFootwear"></span></li>
+        <li><a href="#" class="btnCat">Accessories</a><span id="sumAccessories"></span></li>
+      </ul>
+
+      <div class="border-b-1 pb-2 border-[#E5BEB7]">
+        <p class="subTitle ">Size</p>
+        <div class="flex flex-wrap gap-1">
+          <button class="btnSize">XS<a href=""></a></button>
+          <button class="btnSize">S<a href=""></a></button>
+          <button class="btnSize">M<a href=""></a></button>
+          <button class="btnSize">L<a href=""></a></button>
+          <button class="btnSize">XL<a href=""></a></button>
+          <button class="btnSize">XXL<a href=""></a></button>      
+        </div>      
+      </div>    
+
+      <div class="priceRangeContainer border-b-1 pb-2 border-[#E5BEB7]">
+        <p class="subTitle">Price Range</p>
+        
+        <input type="range" id="priceRange" class="customRange" min="0" max="10000000" step="50000" value="500000">
+
+        <div class="priceDisplay">
+          <div class="priceValueWrapper">
+            <div class="priceValue" id="minPriceValue">Rp 0</div>
+            <div class="priceLabel">Minimum</div>
+          </div>
+          <span class="priceSeparator">—</span>
+          <div class="priceValueWrapper">
+            <div class="priceValue" id="maxPriceValue">Rp 10.000.000</div>
+            <div class="priceLabel">Maksimum</div>
+          </div>
+        </div> 
+      </div>
+
+      <div class="py-2 ">
+        <p class="subTitle ">Style</p>
+        <button class="btnStyle">Monochrome<a href=""></a></button>
+        <button class="btnStyle">Techwear<a href=""></a></button>
+        <button class="btnStyle">High-Contest<a href=""></a></button>
+        <button class="btnStyle">Minimalist<a href=""></a></button>  
+      </div>    
+
+      <button class=" w-full py-2 py-2 mb-2 text-center  bg-[#A30000] text-white font-semibold text rounded-xl">Find</button>
+    </div>
+
+    <div id="btnSlide" onclick="toggleMobileMenu()" class="md:hidden mt-40 w-fit bg-white border-b border-t border-r rounded-r-md overflow-hidden border-[#A30000] h-fit pr-4 py-4 flex items-center">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  
+
+  <div id="menuOverlay" class="menuOverlay"></div>
+
+  <div id="shopContent" class="flex-1 h-full  m-6 mr-0 pr-6 overflow-y-auto">
+    <p class="text-[#5E5E5E] text-xs">NEW SEASON</p>
+    <h1 class="title ">URBAN ESSENTIALS</h1>
+
+    <div class="flex w-full justify-between">
+      <div ></div>
+      <div class="w-6/10 flex items-end justify-end max-md:w-8/10">
+        <span class="text-[#5E5E5E] text-xs mr-8">Showing <span></span> items</span>
+        <span class="text-xs">Sort by:</span>
+
+        <div class="relative">
+          <button id="sortBtn" class="text-xs flex items-center gap-1">
+            Newest ▾
+          </button>
+          <ul id="sortMenu" class="hidden absolute right-0 mt-1 bg-white border border-[#E5BEB7] rounded-lg overflow-hidden shadow-md z-10">
+            <li class="px-4 py-2 text-xs hover:bg-[#E5BEB7] cursor-pointer">Newest</li>
+            <li class="px-4 py-2 text-xs hover:bg-[#E5BEB7] cursor-pointer">Oldest</li>
+            <li class="px-4 py-2 text-xs hover:bg-[#E5BEB7] cursor-pointer">Price: Low to High</li>
+            <li class="px-4 py-2 text-xs hover:bg-[#E5BEB7] cursor-pointer">Price: High to Low</li>
+          </ul>
+        </div>
+
+      </div>      
+    </div>    
+
+    <section id="shopProduct" class="py-2 my-4 flex flex-wrap gap-2 w-full justify-between"></section>
+  </div>
+
+</div>
+
+
 
 <script src="../js/data.js"></script>
+<script>  
+
+  loadProducts(data => {
+    const container = document.getElementById('shopProduct');
+    const cards = data.products.map(product => productShop(product));
+    container.innerHTML = cards.join('');
+  });  
+
+  window.onload = () => {
+    parent.postMessage({ iframeHeight: '100vh' }, '*');
+  }
+
+  const btn = document.getElementById('sortBtn');
+  const menu = document.getElementById('sortMenu');
+
+  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+
+  menu.querySelectorAll('li').forEach(li => {
+    li.addEventListener('click', () => {
+      btn.textContent = li.textContent + ' ▾';
+      menu.classList.add('hidden');
+    });
+  });
+
+  // Tutup kalau klik di luar
+  document.addEventListener('click', (e) => {
+    if (!btn.contains(e.target) && !menu.contains(e.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+
+  function toggleMobileMenu() {
+    const menu = document.getElementById('slideBar');
+    const overlay = document.getElementById('menuOverlay');
+    
+    menu.classList.toggle('show');
+    overlay.classList.toggle('show');
+  }
+  
+  // Fungsi tutup menu dan navigasi
+  function closeMenuAndNavigate(page) {
+    const menu = document.getElementById('slideBar');
+    const overlay = document.getElementById('menuOverlay');
+    
+    menu.classList.remove('show');
+    overlay.classList.remove('show');
+    
+    navigateTo(page);
+  }
+  
+  // Tutup menu kalau klik overlay
+  document.getElementById('menuOverlay')?.addEventListener('click', () => {
+    document.getElementById('slideBar')?.classList.remove('show');
+    document.getElementById('menuOverlay')?.classList.remove('show');
+  });      
+</script>
 <script>
-  navbarLoad("../../", "../index.html", ".");
+  (function() {
+      const rangeInput = document.getElementById('priceRange');
+      const minDisplay = document.getElementById('minPriceValue');
+      const maxDisplay = document.getElementById('maxPriceValue');
+      
+      const min = 0;
+      const max = 10000000;
+      const step = 50000;
+          
+      // Update progress background (untuk Chrome/Webkit)
+      function updateProgress(value) {
+        const percent = (value - min) / (max - min) * 100;
+        rangeInput.style.background = `linear-gradient(to right, var(--primary) 0%, var(--primary) ${percent}%, #e5e7eb ${percent}%, #e5e7eb 100%)`;
+      }
+      
+      // Update display values
+      function updateValue(value) {
+        // Pastikan kelipatan step
+        let roundedValue = Math.round(value / step) * step;
+        if (roundedValue < min) roundedValue = min;
+        if (roundedValue > max) roundedValue = max;
+        
+        // Update kedua display (bisa untuk min atau max range)
+        // Untuk single range, kita tampilkan nilai yang dipilih sebagai maksimal
+        minDisplay.textContent = formatRupiah(min);
+        maxDisplay.textContent = formatRupiah(roundedValue);
+        
+        return roundedValue;
+      }
+      
+      // Handle input change
+      function onRangeChange() {
+        let value = parseInt(rangeInput.value);
+        let roundedValue = Math.round(value / step) * step;
+        
+        if (roundedValue < min) roundedValue = min;
+        if (roundedValue > max) roundedValue = max;
+        
+        rangeInput.value = roundedValue;
+        updateValue(roundedValue);
+        updateProgress(roundedValue);
+        
+        // Trigger custom event jika diperlukan
+        const event = new CustomEvent('priceChange', { 
+          detail: { price: roundedValue, formatted: formatRupiah(roundedValue) }
+        });
+        rangeInput.dispatchEvent(event);
+      }
+      
+      // Set initial values
+      function init() {
+        const initialValue = parseInt(rangeInput.value);
+        const roundedInitial = Math.round(initialValue / step) * step;
+        rangeInput.value = roundedInitial;
+        updateValue(roundedInitial);
+        updateProgress(roundedInitial);
+      }
+      
+      // Event listeners
+      rangeInput.addEventListener('input', onRangeChange);
+      rangeInput.addEventListener('change', onRangeChange);
+      
+      // Initialize
+      init();
+      
+      // Export function untuk mendapatkan nilai (opsional)
+      window.getPriceRange = function() {
+        return {
+          min: min,
+          max: parseInt(rangeInput.value),
+          minFormatted: formatRupiah(min),
+          maxFormatted: formatRupiah(parseInt(rangeInput.value))
+        };
+      };
+      
+      // Event listener untuk mendapatkan nilai dari luar
+      rangeInput.addEventListener('priceChange', (e) => {
+        console.log('Harga terpilih:', e.detail.formatted);
+        // Bisa digunakan untuk filter produk
+      });
+    })();
 </script>
 </body>
 </html>

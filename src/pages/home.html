@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>    
+  <link rel="stylesheet" href="../index.css">  
+  <style>
+    :root {
+      --primary: #A30000;
+      --secondary: #E5BEB7;
+      --fg-second: #5E5E5E;
+    }
+
+    .heroSection {
+      position: relative;
+      height: 84vh;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      border-radius: 0.75rem;
+      color: white;
+    }
+
+    .heroImage {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .heroContent {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 7rem 1.5rem 2.5rem;
+    }
+
+    .heroTitle {
+      font-size: clamp(42px, 8vw, 72px);
+      font-weight: 600;
+    }
+
+    /* Categories */
+    .categoriesSection {
+      padding: 1rem 0;
+      height: 78vh;
+    }
+
+    .categoriesWrapper {
+      display: flex;      
+      gap: 0.5rem;
+      height: 90%;
+      color: white;
+    }
+
+    .categoryCard {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0.5rem;
+    }
+
+    .categoryImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .categoryOverlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2rem 0.75rem 0.75rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+    }
+
+    /* Products */
+    .productsSection {
+      padding-top: 2.25rem;
+      margin: 2rem 0;      
+      width: 100%;
+    }
+
+    .productsContainer {
+      display: flex;
+      gap: 3rem;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    /* Newsletter */
+    .newsletterSection {
+      position: relative;
+      color: white;
+      height: 50vh;
+      width: 100%;
+      margin-bottom: 4rem;
+      border-radius: 0.75rem;
+      display: flex;
+      overflow: hidden;
+      align-items: center;
+      background: var(--primary);
+    }
+
+    .newsletterContent {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: relative;
+      z-index: 10;
+      padding-left: 2rem;
+    }
+
+    .newsletterTitle {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .newsletterForm {
+      display: flex;
+      width: 25%;
+    }
+
+    .newsletterInput {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.875rem;
+      padding: 0.625rem 1rem;
+      outline: none;
+    }
+
+    .newsletterButton {
+      background: white;
+      color: var(--primary);
+      padding: 0.625rem 1.25rem;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .newsletterImageWrapper {
+      position: relative;
+      width: 50%;
+      height: 100%;
+    }
+
+    .newsletterImage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .catSubTitle{      
+      font-weight: 600;
+    }
+
+    @media (max-width: 767px) {
+      .heroSection {
+        position: relative;
+        height: 96dvh;
+        overflow: hidden;
+        border-radius: 0.75rem;
+        color: white;
+      }
+
+      .newsletterContent {
+        width: 100%;
+        padding: 2rem;
+      }
+      .newsletterForm {
+        width: 100%;
+      }
+      .newsletterImageWrapper {
+        display: none;
+      }
+
+      .categoriesWrapper {
+        flex-direction: column;
+      }
+
+      .categoriesSection {        
+        height: 120vh;
+      }
+    }
+
+  </style>
+</head>
+<body>  
+  <div id="homeContent" class="w-[100vw] px-6 pt-2 max-md:px-2">    
+    <section class="heroSection">    
+      <img src="../../public/hero.png" alt="Hero" class="heroImage"/>    
+      <div class="heroContent">
+        <p class="mb-2">Fall / Winter 2024</p>
+        <h1 class="heroTitle">
+          VIBES IN EVERY <span class="opacity-40">THREAD</span>
+        </h1>
+        <a href="./pages/shop.html" class="inline-block mt-5 px-6 py-2.5 rounded-lg bg-white text-black font-bold w-fit hover:bg-[#A30000] hover:text-white">
+          Explore Collection
+        </a>
+      </div>
+    </section>
+       
+    <section class="categoriesSection">
+      <div class="flex justify-between items-end mb-4">
+        <div class="max-md:w-8/10">
+          <h2 class="title">TRENDING CATEGORIES</h2>
+          <p class="mb-1 max-md:hidden">Curated essentials for the urban explorer</p>        
+        </div>
+        <a href="#" class="max-md:text-xs px-2 hover:text-[#A30000]">View All<span class="max-md:hidden "> Sets</span></a>
+      </div>
+     
+      <div class="categoriesWrapper">
+        <div class="categoryCard w-4/10 max-md:w-full max-md:h-1/2">
+          <img src="../../public/jaket.png" alt="Outerwear" class="categoryImage"/>
+          <div class="categoryOverlay">
+            <p class="catSubTitle">Outerwear</p>
+            <p class="text-xs">From Rp 149.000</p>
+          </div>
+        </div>
+         
+        <div class="flex flex-col gap-2 w-6/10 h-full max-md:w-full">        
+          <div class="categoryCard h-1/2">
+            <img src="../../public/sepatu.png" alt="Architectural Soles" class="categoryImage"/>
+            <div class="categoryOverlay">
+              <p class="catSubTitle">Architectural Soles</p>
+              <p class="text-xs">From Rp 399.000</p>
+            </div>
+          </div>
+          
+          <div class="flex gap-2 h-1/2">
+            <div class="categoryCard w-1/2">
+              <img src="../../public/dompet.png" alt="Accents" class="categoryImage"/>
+              <div class="categoryOverlay px-2 pb-2 pt-6">
+                <p class="catSubTitle">Accents</p>
+              </div>
+            </div>
+            <div class="categoryCard w-1/2">
+              <img src="../../public/tas.png" alt="Graphics" class="categoryImage"/>
+              <div class="categoryOverlay px-2 pb-2 pt-6">
+                <p class="catSubTitle">Graphics</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+       
+    <section class="productsSection">
+      <div class="mb-4">
+        <h2 class="title">BEST PRODUCT OF THE MONTH</h2>
+      </div>    
+      <div id="productsContainer" class="productsContainer"></div>
+    </section>
+       
+    <section class="newsletterSection">         
+      <div class="newsletterContent">
+        <div>
+          <p class="newsletterTitle">
+            JOIN THE VIBES INNER<br>CIRCLE
+          </p>
+          <p class="text-sm">
+            Early access to limited drops, exclusive editorial<br>
+            content, and member-only pricing.
+          </p>
+        </div>
+        <div class="newsletterForm">
+          <input type="email" placeholder="Email address" class="newsletterInput flex-1"/>
+          <button class="newsletterButton">Join</button>
+        </div>
+      </div>
+      <div class="newsletterImageWrapper">
+        <img src="../../public/bottomHome.png" alt="Newsletter" class="newsletterImage"/>
+      </div>
+    </section>     
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script>   
+    loadProducts(data => {
+      const container = document.getElementById('productsContainer');
+      const cards = data.products.map(product => createProductCard(product, "widthHome"));
+      container.innerHTML = cards.join('');
+    });    
+  </script>
+</body>
+</html>

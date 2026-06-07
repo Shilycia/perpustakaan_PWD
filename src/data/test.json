@@ -2,7 +2,7 @@
   "products": [
     {
       "id": 1,
-      "name": "Kaos Polos Premium",
+      "name": "Kaos Polos",
       "category": "Kaos",
       "price": 99000,
       "originalPrice": 150000,
@@ -13,11 +13,11 @@
       "rating": 4.8,
       "reviewCount": 124,
       "image": "https://picsum.photos/id/20/300/300",
-      "description": "Kaos polos cotton combed 30s, nyaman dipakai sehari-hari"
+      "description": "Kaos polos cotton combed"
     },
     {
       "id": 2,
-      "name": "Kemeja Flanel Pria",
+      "name": "Kemeja Flanel",
       "category": "Kemeja",
       "price": 189000,
       "originalPrice": 250000,
@@ -28,11 +28,11 @@
       "rating": 4.6,
       "reviewCount": 89,
       "image": "https://picsum.photos/id/21/300/300",
-      "description": "Kemeja flanel bahan tebal, cocok untuk gaya kasual"
+      "description": "Kemeja flanel"
     },
     {
       "id": 3,
-      "name": "Jaket Denim Oversized",
+      "name": "Jaket Denim",
       "category": "Jaket",
       "price": 299000,
       "originalPrice": 400000,
@@ -43,7 +43,7 @@
       "rating": 4.9,
       "reviewCount": 56,
       "image": "https://picsum.photos/id/22/300/300",
-      "description": "Jaket denim model oversized, trendi dan kekinian"
+      "description": "Jaket"
     },
     {
       "id": 4,
@@ -58,7 +58,8 @@
       "rating": 4.7,
       "reviewCount": 203,
       "image": "https://picsum.photos/id/23/300/300",
-      "description": "Hoodie dengan bahan cotton fleece, hangat dan nyaman"
+      "description": "Hoodie dengan"
     }   
   ]
 }
+

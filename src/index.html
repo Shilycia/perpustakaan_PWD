@@ -1,131 +1,157 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" scrolling="no">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
+  <title>Vibes</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
   <link href="https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.2.5/index.css" rel="stylesheet">
   <style>
-    body {
+    html,body {
       font-family: 'Geist Sans';
+      overflow: hidden;
+    }
+
+    :root {
+      --primary: #A30000;
+      --secondary: #E5BEB7;
+      --fg-second: #5E5E5E;
+    }
+
+    .wrapper {
+      width: 100%;
+      height: calc(100% - 4rem);
+    }
+
+    #content {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    #navbar {
+      width: 100%;
+      height: 4rem;
+      border: none;
+      display: fixed;
+    }
+
+    .navbarMobile {
+      position: fixed;
+      top: 4rem;
+      left: 0;
+      width: 100%;
+      background-color: #F9F9F9;
+      transform: translateY(-150%);
+      transition: transform 0.3s ease;
+      z-index: 50;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbarMobile.show {
+      transform: translateY(0); 
+    }
+
+    .navItem {
+      text-align: center;
+      border-bottom: 1px solid var(--secondary);
+      padding: 1rem 0;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .navItem:hover {
+      background-color: var(--secondary);
+      color: var(--primary);
+    }
+
+    .navItem:active {
+      color: var(--primary);
+    }
+
+    .menuOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      display: none;
+      margin-top: 4rem;
+    }
+
+    .menuOverlay.show {
+      display: block;
     }
   </style>
-  <link rel="stylesheet" href="./index.css">
+  <link rel="stylesheet" href="./index.css">  
 </head>
+
 <body>
 
-  <nav class="navbar" ></nav>
-
-  <main class="mt-20 w-full px-4">
-    <section id="hero" class="relative h-[84dvh] overflow-hidden rounded-xl text-white">    
-      <img src="../public/hero.png" alt="Hero"
-          class="absolute w-full h-full object-cover"/>    
-      <div class="relative z-10 h-full flex flex-col justify-center pt-28 px-6 pb-10">
-        <p class=" mb-2">Fall / Winter 2024</p>
-        <h1 class="title" style="font-size:clamp(42px,8vw,72px);">
-          VIBES IN EVERY <span class="opacity-40">THREAD</span>
-        </h1>
-        <a href="./pages/shop.html"
-          class="inline-block mt-5 px-6 py-2.5 border rounded-lg bg-white text-black font-bold w-fit">
-          Explore Collection
-        </a>
-      </div>
-    </section>
+<iframe id="navbar" src="navbar.html"></iframe>
+<main class="wrapper">  
+    <ul id="navbarMobile" class="navbarMobile">
+      <li class="navItem" onclick="closeMenuAndNavigate('./pages/home.html')">Home</li>
+      <li class="navItem" onclick="closeMenuAndNavigate('./pages/shop.html')">Shop</li>
+      <li class="navItem" onclick="closeMenuAndNavigate('./pages/archivedOrder.html')">Orders</li>
+    </ul>  
+    <div id="menuOverlay" class="menuOverlay"></div>
+  <iframe src="pages/home.html" id="content" ></iframe>
+</main>
    
-  <section id="categories" class="py-9 h-[84vh] ">
-    <div class="flex justify-between items-end mb-4">
-      <div>
-        <h2 class="title">TRENDING CATEGORIES</h2>
-        <p class="mb-1">Curated essentials for the urban explorer</p>        
-      </div>
-      <a href="#" class="">View All Sets</a>
-    </div>
-     
-    <div class="flex gap-2 h-9/10 text-white ">
-       
-      <div class="relative overflow-hidden w-5/10 rounded-lg">
-        <img src="../public/jaket.png" alt="Outerwear" class="w-full h-full object-cover"/>
-        <div class="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-8 trendingCard">
-          <p class="text-lg font-semibold">Outerwear</p>
-          <p>From Rp 149.000</p>
-        </div>
-      </div>
-       
-      <div class="flex flex-col gap-2 w-1/2 h-full" >        
-        <div class="relative overflow-hidden h-1/2">
-          <img src="../public/sepatu.png" alt="Architectural Soles" class="w-full h-full object-cover"/>
-          <div class="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-8 trendingCard">
-            <p>Architectural Soles</p>
-            <p>From Rp 399.000</p>
-          </div>
-        </div>
-        
-        <div class="flex gap-2 h-1/2 " >
-          <div class="relative overflow-hidden w-1/2">
-            <img src="../public/dompet.png" alt="Accents"
-                 class="w-full h-full object-cover"/>
-            <div class="absolute bottom-0 left-0 right-0 px-2 pb-2 pt-6 trendingCard">
-              <p class="text-sm">Accents</p>
-            </div>
-          </div>
-
-          <div class="relative overflow-hidden w-1/2">
-            <img src="../public/tas.png" alt="Graphics"
-                 class="w-full h-full object-cover"/>
-            <div class="absolute bottom-0 left-0 right-0 px-2 pb-2 pt-6 trendingCard">
-              <p class="text-sm">Graphics</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-   
-  <section id="listItem" class="py-9 mt-8 h-[84vh] w-full">
-    <div class="mb-4">
-      <h2 class="title">BEST PRODUCT OF THE MONTH</h2>
-    </div>    
-    <div id="productsContainer" class="flex gap-2 w-full justify-between"></div>
-  </section>
-   
-  <section id="newsletter" class="relative text-white h-65 my-16 rounded-xl flex overflow-hidden items-center bg-[#A30000]">         
-    <div class="flex w-1/2 flex-col gap-6 relative z-10 pl-8">
-      <div >
-        <p class="text-3xl mb-1">
-          JOIN THE VIBES INNER<br>CIRCLE
-        </p>
-        <p class="text-sm">
-          Early access to limited drops, exclusive editorial<br>
-          content, and member-only pricing.
-        </p>
-      </div>
-      <div class="flex w-1/4 max-md:w-full">
-        <input type="email" placeholder="Email address"
-               class=" bg-black/30 border border-white/20 text-sm px-4 py-2.5 outline-none placeholder-white/40"/>
-        <button class="bg-white text-[#A30000] px-5 py-2.5 text-xs font-bold hover:bg-gray-100 transition-colors">
-          Join
-        </button>
-      </div>
-    </div>
-
-    <div class="relative w-1/2 h-full">
-      <img src="../public/bottomHome.png" alt="Newsletter" class="absolute inset-0 w-full h-full object-cover "/>
-    </div>
-  </section>   
-  
-  </main>
-
 <script src="./js/data.js"></script>
-<script>
-  navbarLoad("../","","./pages");
+<script>   
+  autoResizeIframe("content");  
+
+  function navigateTo(page) {
+    document.getElementById('content').src = page;        
+  }
+
+  window.addEventListener('message', (e) => {
+    if (e.data.iframeHeight) {
+      document.getElementById('content').style.height = e.data.iframeHeight;
+    }
+  });
+
+  function toggleMobileMenu() {
+    const menu = document.getElementById('navbarMobile');
+    const overlay = document.getElementById('menuOverlay');
     
-  loadProducts(data => {
-    const container = document.getElementById('productsContainer');
-    const cards = data.products.map(product => createProductCard(product));
-    container.innerHTML = cards.join('');
-  });    
+    menu.classList.toggle('show');
+    overlay.classList.toggle('show');
+  }
+  
+  // Fungsi tutup menu dan navigasi
+  function closeMenuAndNavigate(page) {
+    const menu = document.getElementById('navbarMobile');
+    const overlay = document.getElementById('menuOverlay');
+    
+    menu.classList.remove('show');
+    overlay.classList.remove('show');
+    
+    navigateTo(page);
+  }
+  
+  // Tutup menu kalau klik overlay
+  document.getElementById('menuOverlay')?.addEventListener('click', () => {
+    document.getElementById('navbarMobile')?.classList.remove('show');
+    document.getElementById('menuOverlay')?.classList.remove('show');
+  });
+  
+  // Listen message dari navbar.html untuk toggle menu
+  window.addEventListener('message', (e) => {
+    if (e.data.toggleMenu) {
+      toggleMobileMenu();
+    }
+    
+    if (e.data.iframeHeight) {
+      document.getElementById('content').style.height = e.data.iframeHeight;
+    }
+  });
 </script>
 
 </body>

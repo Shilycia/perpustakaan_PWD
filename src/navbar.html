@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./index.css">
+  <style>    
+  :root {
+    --primary: #A30000;
+    --secondary: #E5BEB7;
+    --fg-second: #5E5E5E;
+  }
+
+  .navbarContent {
+    background-color: #F9F9F9;
+    width: 100%;
+    height: 4rem;
+    border: 1px solid var(--secondary);
+    display: flex;
+    align-items: center;
+    position: fixed;
+    z-index: 100;
+  }
+
+  .navbarLogo {
+    height: 70%;
+    margin-left: 1rem;
+  }
+
+  .navbarMenu {
+    display: flex;
+    gap: 2rem;    
+    margin-right: 0.5rem;
+    font-weight: 600;
+    list-style: none;
+  }
+
+  .navbarItem{
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+
+  .navbarSearch {
+    max-width: 30%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--secondary);
+    border-radius: 9999px;
+    padding: 0.5rem;
+    margin-left: auto;
+    margin-right: 1rem;
+    &:focus-within{
+      border: 1px solid var(--primary);
+    }
+  }
+
+  .navbarSearchIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .navbarSearchInput {
+    width: 100%;
+    outline: none;
+    border: none;
+    background: transparent;
+  }
+
+  .navbarIcons {
+    display: flex;
+    gap: 2rem;
+    margin-right: 3rem;  
+  }
+
+  #userIcon, #shopBag {
+    color: var(--primary);
+  }
+
+  #userIcon:hover, #shopBag:hover {
+    opacity: 50%;
+  }
+
+
+  .navbarIconLink:hover {
+    color: #E5BEB7;
+  }
+
+  .navbarIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  @media (min-width: 768px){
+    #btnNavToggle{
+      display: none;      
+    }
+  }
+
+  @media (min-width: 769px){
+    .navbarMenu {      
+      margin-left: 3rem;      
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .navbarLogo {
+      width: 20%;
+      height: 40%;
+      margin-left: 0.25rem;
+    }
+
+    .navbarMenu {
+      gap: 0.5rem;
+      margin-left: 0.5rem;
+    }
+
+    .navbarSearch {
+      display: none;
+    }
+
+    .navbarIcons {
+      gap: 0.5rem;
+      margin-right: 0.5rem;
+      margin-left: auto;
+    }
+
+    .navbarItem{
+      display: none;
+    }
+
+    #btnNavToggle{      
+      margin: 0 1rem;
+    }
+  }
+  </style>
+</head>
+<body>
+  <nav class="navbarContent" >
+    <img src="../public/logo.png" alt="Logo" class="navbarLogo">
+
+    <ul class="navbarMenu">
+      <li class="navbarItem" onclick="parent.navigateTo('./pages/home.html')">Home</li>
+      <li class="navbarItem" onclick="parent.navigateTo('./pages/shop.html')">Shop</li>
+      <li class="navbarItem" onclick="parent.navigateTo('./pages/archivedOrder.html')">Orders</li>
+    </ul>
+
+    <div id="search" class="navbarSearch" tabindex="0" class="editable-box">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="navbarSearchIcon">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+      </svg>
+      <input id="searchItem" type="text" placeholder="found your styles..." class="navbarSearchInput" name="searchItem">
+    </div>
+
+    <div class="navbarIcons">
+      <a onclick="parent.navigateTo('./pages/userOrder.html')" class="navbarIconLink">
+        <svg id="shopBag" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="navbarIcon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
+        </svg>
+      </a>
+      <a onclick="parent.navigateTo('./pages/profile.html')" class="navbarIconLink">
+        <svg id="userIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="navbarIcon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+        </svg>
+      </a>
+    </div>
+
+    <div id="btnNavToggle">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="navbarIcon">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
+      </svg>
+    </div>
+  </nav>  
+    
+  <script>
+    document.getElementById('btnNavToggle').addEventListener('click', () => {
+      parent.postMessage({ toggleMenu: true }, '*');
+    });
+  </script>
+</body>
+</html>
