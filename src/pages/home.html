@@ -13,9 +13,13 @@
       --fg-second: #5E5E5E;
     }
 
+    html, body {
+      height: 100%;      
+    }
+
     .heroSection {
       position: relative;
-      height: 84vh;
+      height: 98vh;
       overflow: hidden;
       margin-bottom: 2rem;
       border-radius: 0.75rem;
@@ -284,11 +288,30 @@
 
   <script src="../js/data.js"></script>
   <script>   
-    loadProducts(data => {
-      const container = document.getElementById('productsContainer');
-      const cards = data.products.map(product => createProductCard(product, "widthHome"));
-      container.innerHTML = cards.join('');
-    });    
+   loadProducts(data => {
+    const container = document.getElementById('productsContainer');
+    const cards = data.products.map(product => createProductCard(product, "widthHome"));
+    container.innerHTML = cards.join('');
+
+    // Add click handlers to product cards
+    document.querySelectorAll('.productCard').forEach(card => {
+      card.addEventListener('click', () => {
+        const product = JSON.parse(card.dataset.product);
+        setSelectedProduct(product);
+        parent.navigateTo('./pages/itemDetail.html');
+      });
+    });
+
+    // Tambah ini agar iframe expand ke parent
+    setTimeout(() => {
+      window.parent.postMessage({
+        iframeHeight: document.documentElement.scrollHeight + 'px'
+      }, '*');
+    }, 100); // sedikit delay agar gambar/konten sempat render
+  });
+
+  window.parent.postMessage({ page: 'home' }, '*');
+
   </script>
 </body>
 </html>

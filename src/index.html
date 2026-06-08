@@ -20,12 +20,14 @@
 
     .wrapper {
       width: 100%;
-      height: calc(100% - 4rem);
+      height: calc(100vh - 4rem);
+      overflow-y: auto;
     }
 
     #content {
       width: 100%;
       min-height: 100%;
+      border: none;
     }
 
     #navbar {
@@ -86,6 +88,8 @@
     .menuOverlay.show {
       display: block;
     }
+
+
   </style>
   <link rel="stylesheet" href="./index.css">  
 </head>
@@ -95,9 +99,9 @@
 <iframe id="navbar" src="navbar.html"></iframe>
 <main class="wrapper">  
     <ul id="navbarMobile" class="navbarMobile">
-      <li class="navItem" onclick="closeMenuAndNavigate('./pages/home.html')">Home</li>
-      <li class="navItem" onclick="closeMenuAndNavigate('./pages/shop.html')">Shop</li>
-      <li class="navItem" onclick="closeMenuAndNavigate('./pages/archivedOrder.html')">Orders</li>
+      <li class="navItem" onclick="closeMenuAndNavigate('/home')">Home</li>
+      <li class="navItem" onclick="closeMenuAndNavigate('/shop')">Shop</li>
+      <li class="navItem" onclick="closeMenuAndNavigate('/archivedOrder')">Orders</li>
     </ul>  
     <div id="menuOverlay" class="menuOverlay"></div>
   <iframe src="pages/home.html" id="content" ></iframe>
@@ -105,15 +109,74 @@
    
 <script src="./js/data.js"></script>
 <script>   
-  autoResizeIframe("content");  
+  let currentRoute = '/home';
+  const routes = {
+    '/home': './pages/home.html',
+    '/shop': './pages/shop.html',
+    '/cart': './pages/cart.html',
+    '/order': './pages/userOrder.html',    
+  };
+  
 
-  function navigateTo(page) {
-    document.getElementById('content').src = page;        
+  function navigateTo(route) {
+    if (currentRoute === route) return;
+    
+    currentRoute = route;
+    history.pushState({ route }, '', '#' + route);
+    loadPage();
+  }
+
+  let currentIframeSrc = '';
+
+  function loadPage() {
+    const content = document.getElementById('content');
+    let newSrc;
+
+    if (currentRoute.startsWith('/detail/')) {
+      newSrc = './pages/itemDetail.html';
+    } else {
+      newSrc = routes[currentRoute] || routes['/home'];
+    }
+
+    const newFullUrl = new URL(newSrc, location.href).href;
+
+    if (currentIframeSrc === newFullUrl) return;
+    
+    currentIframeSrc = newFullUrl;
+
+    try {
+      content.contentWindow.location.replace(newFullUrl);
+    } catch (e) {
+      content.src = newSrc;
+    }
+  }
+
+
+  window.addEventListener('load', () => {
+    const hash = location.hash.slice(1);
+    currentRoute = hash || '/home';
+  
+    history.replaceState({ route: currentRoute }, '', '#' + currentRoute);
+    loadPage();
+  });
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.route) {
+      currentRoute = e.state.route;
+    } else {
+    
+      currentRoute = location.hash.slice(1) || '/home';
+    }
+    loadPage();
+  });  
+
+  function getRouteParam() {
+    const match = currentRoute.match(/^\/detail\/(\d+)$/);
+    return match ? match[1] : null;
   }
 
   window.addEventListener('message', (e) => {
-    if (e.data.iframeHeight) {
-      document.getElementById('content').style.height = e.data.iframeHeight;
+    if (e.data.toggleMenu) {
+      toggleMobileMenu();
     }
   });
 
@@ -125,7 +188,6 @@
     overlay.classList.toggle('show');
   }
   
-  // Fungsi tutup menu dan navigasi
   function closeMenuAndNavigate(page) {
     const menu = document.getElementById('navbarMobile');
     const overlay = document.getElementById('menuOverlay');
@@ -136,22 +198,11 @@
     navigateTo(page);
   }
   
-  // Tutup menu kalau klik overlay
+
   document.getElementById('menuOverlay')?.addEventListener('click', () => {
     document.getElementById('navbarMobile')?.classList.remove('show');
     document.getElementById('menuOverlay')?.classList.remove('show');
-  });
-  
-  // Listen message dari navbar.html untuk toggle menu
-  window.addEventListener('message', (e) => {
-    if (e.data.toggleMenu) {
-      toggleMobileMenu();
-    }
-    
-    if (e.data.iframeHeight) {
-      document.getElementById('content').style.height = e.data.iframeHeight;
-    }
-  });
+  });  
 </script>
 
 </body>

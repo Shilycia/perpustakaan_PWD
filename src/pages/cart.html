@@ -1,0 +1,254 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>    
+    <style>
+  :root {
+    --primary: #A30000;
+    --secondary: #E5BEB7;
+    --fg-second: #5E5E5E;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-y: auto; /* iframe html bisa discroll */
+  }
+
+  .cartSection{
+    width:65%;
+    height:auto;
+    margin-left:.5rem;
+    margin-right:.5rem;
+    margin-bottom:2rem;
+
+    display:flex;
+    flex-direction:column;
+    gap:.5rem;
+  }
+
+  .cartItem{
+    width:100%;
+    display:flex;
+    border-bottom:1px solid #E5BEB7;
+    padding-bottom:.5rem;
+  }
+
+  .productImage{
+    width:20%;
+    border-radius:.5rem;
+    overflow:hidden;
+  }
+
+  .productImage img,
+  .recommendImage img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .productDesc{
+    font-size:.75rem;
+    color:#94A3B8;
+  }
+
+  .qtyControl{
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    border:1px solid #E5E7EB;
+    border-radius:9999px;
+    padding:.375rem 1rem;
+    width:fit-content;
+  }
+
+  .summaryWrapper{
+    width:30%;
+    padding-left:.5rem;
+    padding-right:.5rem;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:1rem;
+    margin-bottom:2rem;
+  }
+
+  .recommendContainer{
+    width:100%;
+    display:flex;
+    justify-content: space-evenly;
+    gap:0.8rem;
+    margin:1.2rem 0;
+    padding:0 0.5rem;
+    box-sizing:border-box;
+    overflow-x:auto;
+  }
+
+  .recommendItem{
+    flex: 0 0 calc(20% - 0.64rem);
+    min-width:120px;
+  }
+
+  .recommendImage{    
+    aspect-ratio:1/1;
+    border-radius:.5rem;
+    overflow:hidden;
+    margin-bottom:.1rem;
+  }
+
+  .recommendName{
+    font-weight:600;
+    font-size:.85rem;
+  }
+
+  .recommendPrice{
+    font-size:.75rem;
+    font-weight: 600;
+  }
+
+  @media (max-width:768px){
+
+    .cartSection,
+    .summaryWrapper{
+      width:100%;
+    }
+
+    .cartItem{
+      width:90%;
+    }
+  }  
+    </style>
+    <link rel="stylesheet" href="../index.css">
+  </head>
+  <body >  
+    <div class="w-full flex flex-col" style="min-height: 100vh; padding-bottom: 2rem;">    
+      <h1 class="title mb-1 w-fit ml-2">Shopping bag</h1> 
+
+      <div class="w-full flex max-md:flex-col ">
+
+        <div class="cartSection" id="cartSection">
+                 
+        </div>    
+
+        <div class="summaryWrapper ">
+          <div class="orderSummary">
+            <h2 class="sumTitle">ORDER SUMMARY</h2>
+            <div class="row">
+                <span>SUBTOTAL</span>
+                <span>Rp 6.040.000</span>
+            </div>
+            <div class="row">
+                <span>ESTIMATED SHIPPING</span>
+                <span>Rp 45.000</span>
+            </div>
+            <div class="row">
+                <span>TAX</span>
+                <span>Rp 0</span>
+            </div>
+            <hr>
+            <div class="row total">
+                <span class="sumTitle">TOTAL</span>
+                <span>Rp 6.085.000</span>
+            </div>
+            <div class="promo">
+                <label>PROMO CODE</label>
+
+                <div class="promoBox">
+                    <input type="text" placeholder="ENTER CODE">
+                    <button>APPLY</button>
+                </div>
+            </div>
+
+            <button class="checkoutBtn rounded-lg" onclick="parent.navigateTo('/order')">CHECKOUT</button>
+
+            <div class="info">
+                <span>🚚 Free shipping on orders over Rp 7.500.000</span>
+                <span>🔒 Secure encrypted checkout</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="subTitle ml-2 mt-2">You may also like</p>
+      <div class="recommendContainer"></div>
+
+    </div>
+        
+
+  <script src="../js/data.js"></script>
+  <script>
+  
+
+  const createCartItem = (product) => { 
+    return `        
+    <div class="cartItem" >
+
+      <div class="productImage">
+        <img src="../../public/tas.png" alt="barang" class="object-cover w-full h-full">
+      </div>
+
+      <div class="flex ml-2 justify-between flex-1">
+        <div class="flex flex-col justify-between">
+          <div>
+            <p class="subTitle mb-2">${product.name}</p>
+            <p class="productDesc">${product.description}</p>
+          </div>
+          <div class="qtyControl">
+            <button onclick="this.nextElementSibling.textContent = Math.max(1, +this.nextElementSibling.textContent - 1)" class="text-gray-500 hover:text-black text-lg leading-none">−</button>
+            <span class="text-sm font-medium w-4 text-center">2</span>
+            <button onclick="this.previousElementSibling.textContent = +this.previousElementSibling.textContent + 1" class="text-gray-500 hover:text-black text-lg leading-none">+</button>
+          </div>
+        </div>   
+        
+        <div class="flex flex-col justify-between items-end">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <p class="text-lg font-semibold max-md:text-xs">${formatRupiah(product.price)}</p>
+        </div>
+      </div>        
+    </div>
+    `;
+  }
+
+  const createRecommendItem = (product) => { 
+    return `        
+    <div class="recommendItem">
+      <div class="recommendImage">
+        <img src="../../public/tas.png" alt="barang" class="object-cover w-full h-full">
+      </div> 
+      <p class="recommendName">${product.name}</p>
+      <p class="recommendPrice">${formatRupiah(product.price)}</p>
+    </div>
+    `;
+  }
+
+  loadProducts(data => {
+    const container = document.getElementById('cartSection');
+    const cards = data.products.map(product => createCartItem(product));
+    container.innerHTML = cards.join('');
+
+    const recommendContainer = document.querySelector('.recommendContainer');
+    const recommendCards = data.products.slice(0, 5).map(product => createRecommendItem(product));
+    recommendContainer.innerHTML = recommendCards.join('');
+
+    setTimeout(() => {
+    window.parent.postMessage({
+      iframeHeight: document.documentElement.scrollHeight + 'px'
+    }, '*');
+  }, 0);
+  });  
+
+  window.parent.postMessage({
+      page: 'cart'
+  }, '*');
+
+  console.log(document.body.scrollHeight);
+  
+
+  </script>
+  </body>
+  </html>

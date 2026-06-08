@@ -1,25 +1,445 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>  
-  <link href="https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.2.5/index.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Geist Sans';
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>    
+    <style>
+  :root {
+    --primary: #A30000;
+    --secondary: #E5BEB7;
+    --fg-second: #5E5E5E;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-y: auto; /* iframe html bisa discroll */
+  }
+
+  #productContainer{
+    width:95%;
+    height:auto;
+    margin-left:.5rem;
+    margin-right:.5rem;
+    margin-bottom:2rem;
+
+    display:flex;
+    flex-direction:column;
+    gap:.5rem;
+  }
+
+  .cartItem{
+    width:100%;
+    display:flex;
+    border-bottom:1px solid #E5BEB7;
+    padding-bottom:.5rem;
+  }
+
+  .qtyControl{
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    border:1px solid #E5E7EB;
+    border-radius:9999px;
+    padding:.375rem 1rem;
+    width:fit-content;
+  }
+
+  .productImage{
+    width:30%;
+    border-radius:.5rem;
+    overflow:hidden;
+  }
+
+  .productImage img,
+  .recommendImage img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .productDesc{
+    font-size:.75rem;
+    color:#94A3B8;
+  }
+
+  .summaryWrapper{
+    width:30%;
+    padding-left:.5rem;
+    padding-right:.5rem;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:1rem;
+    margin-bottom:2rem;
+  }
+
+  .recommendContainer{
+    width:100%;
+    display:flex;
+    gap:.5rem;
+    margin:1rem .5rem;
+  }
+
+  .recommendItem{
+    width:20%;
+  }
+
+  .recommendImage{
+    aspect-ratio:1/1;
+    border-radius:.5rem;
+    overflow:hidden;
+    margin-bottom:.5rem;
+  }
+
+  .recommendName{
+    font-weight:600;
+  }
+
+  .recommendPrice{
+    font-size:.75rem;
+  }
+
+  /* Form Section Styling */
+  .checkoutFormSection {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .formSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--secondary);
+  }
+
+  .formSection:last-child {
+    border-bottom: none;
+  }
+
+  .sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .stepNumber {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+  }
+
+  .sectionTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  .formGrid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .formGrid.twoColumn {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .formGroup label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--fg-second);
+  }
+
+  .formGroup input {
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    background-color: white;
+  }
+
+  .formGroup input::placeholder {
+    color: #D1D5DB;
+  }
+
+  /* Payment Options Styling */
+  .paymentOption {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .paymentOption:hover {
+    border-color: var(--secondary);
+  }  
+
+  .radioWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .radioWrapper input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    accent-color: var(--primary);
+  }
+
+  .paymentLabel {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+
+  .paymentIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #9CA3AF;
+    flex-shrink: 0;
+  }
+
+  .paymentDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  @media (max-width:768px){
+    .formSection,
+    .summaryWrapper{
+      width:100%;
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
-  </style>
-  <link rel="stylesheet" href="../index.css">
-</head>
-<body>
 
-  <nav class="navbar" ></nav>
+    .cartItem{
+      width:90%;
+    }
 
-<script src="../js/data.js"></script>
-<script>
-  navbarLoad("../../", "../index.html", ".");
-</script>
-</body>
-</html>
+    .formGrid.twoColumn {
+      grid-template-columns: 1fr;
+    }
+
+    .checkoutFormSection {
+      gap: 1.5rem;
+    }
+
+    .formSection {
+      gap: 1rem;
+      padding-bottom: 1.5rem;
+    }
+  }
+    </style>
+    <link rel="stylesheet" href="../index.css">
+  </head>
+  <body >           
+    <div id="userOrderConteiner" class="w-full flex max-md:flex-col gap-6 px-4 py-6" style="min-height: 100vh">       
+
+      <!-- Checkout Form Section -->
+      <div class="checkoutFormSection flex-1">
+        
+        <!-- Shipping Details Section -->
+        <div class="formSection">
+          <div class="sectionHeader">
+            <div class="stepNumber">1</div>
+            <h3 class="sectionTitle">SHIPPING DETAILS</h3>
+          </div>
+
+          <div class="formGrid twoColumn">
+            <div class="formGroup">
+              <label>FIRST NAME</label>
+              <input type="text" class="formStyle" placeholder="John">
+            </div>
+            <div class="formGroup">
+              <label>LAST NAME</label>
+              <input type="text" class="formStyle" placeholder="Doe">
+            </div>
+          </div>
+
+          <div class="formGroup">
+            <label>ADDRESS</label>
+            <input type="text" class="formStyle" placeholder="Jl. Senopati No. 12">
+          </div>
+
+          <div class="formGrid twoColumn">
+            <div class="formGroup">
+              <label>CITY</label>
+              <input type="text" class="formStyle" placeholder="Jakarta Selatan">
+            </div>
+            <div class="formGroup">
+              <label>POSTAL CODE</label>
+              <input type="text" class="formStyle" placeholder="12190">
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method Section -->
+        <div class="formSection">
+          <div class="sectionHeader">
+            <div class="stepNumber">2</div>
+            <h3 class="sectionTitle">PAYMENT METHOD</h3>
+          </div>
+
+          <!-- Credit Card Option -->
+          <div class="paymentOption selectedPayment">
+            <div class="radioWrapper">
+              <input type="radio" id="creditCard" name="payment" checked>
+              <label for="creditCard" class="paymentLabel">CREDIT OR DEBIT CARD</label>
+              <svg class="paymentIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+            </div>
+            <div class="paymentDetails">
+              <div class="formGroup">
+                <input type="text" class="formStyle" placeholder="Card Number">
+              </div>
+              <div class="formGrid twoColumn">
+                <div class="formGroup">
+                  <input type="text" class="formStyle" placeholder="MM/YY">
+                </div>
+                <div class="formGroup">
+                  <input type="text" class="formStyle" placeholder="CVC">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Virtual Account Option -->
+          <div class="paymentOption">
+            <div class="radioWrapper">
+              <input type="radio" id="virtualAccount" name="payment">
+              <label for="virtualAccount" class="paymentLabel">VIRTUAL ACCOUNT / TRANSFER</label>
+              <svg class="paymentIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Digital Wallet Option -->
+          <div class="paymentOption">
+            <div class="radioWrapper">
+              <input type="radio" id="digitalWallet" name="payment">
+              <label for="digitalWallet" class="paymentLabel">DIGITAL WALLET (GOPAY/OVO)</label>
+              <svg class="paymentIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 11h-3.5a1.5 1.5 0 0 1 0-3h3.5"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Order Summary Section -->
+      <div class="summaryWrapper">
+        <div class="orderSummary">
+          <h2 class="sumTitle">ORDER SUMMARY</h2>          
+          <div id="productContainer"></div>
+          <hr>
+          <div class="infoTotalContainer">
+            <div class="infoTotal">
+              <span class="leftInfo">Subtotal</span><span class="rightInfo">Rp.30.000</span>
+            </div>
+            <div class="infoTotal">
+              <span class="leftInfo">Shipping</span><span class="rightInfo">Rp.30.000</span>
+            </div>
+            <div class="infoTotal">
+              <span class="leftInfo">Tax (11%)</span><span class="rightInfo">Rp.30.000</span>
+            </div>
+          </div>
+          <div class="row total">
+              <span class="sumTitle">TOTAL</span>
+              <span>Rp 6.085.000</span>
+          </div>
+          
+          <button class="checkoutBtn rounded-lg">Complete Purchase</button>            
+        </div>
+      </div>
+    </div>
+
+  <script src="../js/data.js"></script>
+  <script>
+  
+
+  const createCartItem = (product) => { 
+    return `        
+    <div class="cartItem" >
+
+      <div class="productImage">
+        <img src="../../public/tas.png" alt="barang" class="object-cover w-full h-full">
+      </div>
+
+      <div class="flex ml-2 justify-between flex-1">
+        <div class="flex flex-col justify-between">
+          <div>
+            <p class="font-semibold mb-2">${product.name}</p>
+            <p class="productDesc">${product.description}</p>
+          </div>
+          <div class="qtyControl">
+            <button onclick="this.nextElementSibling.textContent = Math.max(1, +this.nextElementSibling.textContent - 1)" class="text-gray-500 hover:text-black text-lg leading-none">−</button>
+            <span class="text-sm font-medium w-4 text-center">2</span>
+            <button onclick="this.previousElementSibling.textContent = +this.previousElementSibling.textContent + 1" class="text-gray-500 hover:text-black text-lg leading-none">+</button>
+          </div>
+        </div>   
+        
+        <div class="flex flex-col justify-between items-end">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <p class="font-semibold max-md:text-xs">${formatRupiah(product.price)}</p>
+        </div>
+      </div>        
+    </div>
+    `;
+  }
+
+  loadProducts(data => {
+    const container = document.getElementById('productContainer');
+    const cards = data.products.map(product => createCartItem(product));
+    container.innerHTML = cards.join('');
+
+    setTimeout(() => {
+    window.parent.postMessage({
+      iframeHeight: document.documentElement.scrollHeight + 'px'
+    }, '*');
+  }, 0);
+  });  
+
+  window.parent.postMessage({
+      page: 'cart'
+  }, '*');
+
+  console.log(document.body.scrollHeight);
+  
+
+  </script>
+  </body>
+  </html>

@@ -4,6 +4,22 @@ const loadProducts = (callback) => {
     .then(data => callback(data));
 }
 
+// Load product yang dipilih untuk digunakan di itemDetail.html
+const loadProductData = (callback) => {
+  // Cek apakah ada product di sessionStorage
+  const storedProduct = sessionStorage.getItem('selectedProduct');
+  if (storedProduct) {
+    selectedProduct = JSON.parse(storedProduct);
+    callback(selectedProduct);
+  } else {
+    // Jika tidak ada, gunakan product pertama dari test.json sebagai default
+    loadProducts(data => {
+      selectedProduct = data.products[0];
+      callback(selectedProduct);
+    });
+  }
+}
+
 function autoResizeIframe(...ids) {
   ids.forEach(id => {
     const frame = document.getElementById(id);
@@ -40,9 +56,9 @@ const formatRupiah = (num) => {
 
 const createProductCard = (product) => { 
   return `        
-  <div class="productCard">        
+  <div class="productCard" data-product='${JSON.stringify(product)}' style="cursor: pointer;">        
     <div class="productCardImage">
-      <img src="../../public/jaket.png" alt="Product Image"/>
+      <img src="${product.image}" alt="Product Image"/>
     </div>
     <div class="cardInfoWrapper">
       <div class="productCardInfo">
@@ -58,9 +74,9 @@ const createProductCard = (product) => {
 
 const productShop = (product) => { 
   return `        
-  <div class="productCard">        
+  <div class="productCard" data-product='${JSON.stringify(product)}' style="cursor: pointer;">        
     <div class="productCardImage">
-      <img src="../../public/jaket.png" alt="Product Image"/>
+      <img src="${product.image}" alt="Product Image"/>
     </div>
     <div class="cardInfoWrapper">
       <div class="productInfo">
@@ -71,4 +87,19 @@ const productShop = (product) => {
     </div>        
   </div>      
   `;
+}
+
+
+function renderProduct(product) {
+  document.getElementById('productName').textContent =
+    product.name;
+
+  document.getElementById('productPrice').textContent =
+    formatRupiah(product.price);
+
+  document.getElementById('productDescription').textContent =
+    product.description;
+
+  document.getElementById('mainProductImage').src =
+    product.image;
 }
