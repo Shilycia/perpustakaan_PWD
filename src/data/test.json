@@ -13,7 +13,7 @@
       "rating": 4.8,
       "reviewCount": 124,
       "image": "https://picsum.photos/id/20/300/300",
-      "description": "Kaos polos cotton combed"
+      "description": "Kaos polos "
     },
     {
       "id": 2,
@@ -59,7 +59,83 @@
       "reviewCount": 203,
       "image": "https://picsum.photos/id/23/300/300",
       "description": "Hoodie dengan"
-    }   
+    }
+  ],
+  "orders": [
+    {
+      "id": "UV-9928102",
+      "datePlaced": "Oct 24, 2023",
+      "totalAmount": 4250000,
+      "status": "in_transit",
+      "items": [
+        {
+          "id": 1,
+          "name": "VELOCITY TECH SHELL V2",
+          "size": "XL",
+          "color": "Black",
+          "price": 3500000,
+          "image": "../../public/jaket.png"
+        },
+        {
+          "id": 2,
+          "name": "ARCHIVE LOGO TEE",
+          "size": "L",
+          "color": "White",
+          "price": 750000,
+          "image": "../../public/jaket.png"
+        }
+      ]
+    },
+    {
+      "id": "UV-8812045",
+      "datePlaced": "Sep 12, 2023",
+      "totalAmount": 1850000,
+      "status": "delivered",
+      "items": [
+        {
+          "id": 3,
+          "name": "APEX RUNNER - CRIMSON",
+          "size": "42",
+          "color": "Red",
+          "price": 1850000,
+          "image": "../../public/jaket.png"
+        }
+      ]
+    },
+    {
+      "id": "UV-7701923",
+      "datePlaced": "Aug 05, 2023",
+      "totalAmount": 6200000,
+      "status": "delivered",
+      "items": [
+        {
+          "id": 4,
+          "name": "NOMAD TRAVEL TOTE",
+          "size": "OS",
+          "color": "Noir",
+          "price": 6200000,
+          "image": "../../public/jaket.png"
+        }
+      ]
+    },
+    {
+      "id": "UV-6540871",
+      "datePlaced": "Jul 18, 2023",
+      "totalAmount": 2750000,
+      "status": "packaged",
+      "items": [
+        {
+          "id": 5,
+          "name": "MONOLITH CARGO PANTS",
+          "size": "M",
+          "color": "Olive",
+          "price": 2750000,
+          "image": "../../public/jaket.png"
+        }
+      ]
+    }
   ]
 }
+
+
 

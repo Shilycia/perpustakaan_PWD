@@ -1,4 +1,4 @@
-const loadProducts = (callback) => {
+const loadData = (callback) => {
   fetch('../data/test.json')
     .then(response => response.json())
     .then(data => callback(data));
@@ -31,18 +31,15 @@ function truncate(text) {
   return text.length > max ? text.slice(0, max) + "..." : text;
 }
 
-
-
-
 const formatRupiah = (num) => {
   return 'Rp ' + num.toLocaleString('id-ID');
 }
 
 const createProductCard = (product) => { 
   return `        
-  <div class="productCard">        
+  <div class="productCard" data-product='${JSON.stringify(product)}' style="cursor: pointer;">        
     <div class="productCardImage">
-      <img src="../../public/jaket.png" alt="Product Image"/>
+      <img src="${product.image}" alt="Product Image" class="zoomOut"/>
     </div>
     <div class="cardInfoWrapper">
       <div class="productCardInfo">
@@ -55,20 +52,16 @@ const createProductCard = (product) => {
   `;
 }
 
+function renderProduct(product) {
+  document.getElementById('productName').textContent =
+    product.name;
 
-const productShop = (product) => { 
-  return `        
-  <div class="productCard">        
-    <div class="productCardImage">
-      <img src="../../public/jaket.png" alt="Product Image"/>
-    </div>
-    <div class="cardInfoWrapper">
-      <div class="productInfo">
-      <p class="productCardName" title="${product.name}">${product.name}</p>      
-      <span class="productCardPrice">${formatRupiah(product.price)}</span>
-    </div>    
-    <p class="productCardDesc">${truncate(product.description)}</p>        
-    </div>        
-  </div>      
-  `;
+  document.getElementById('productPrice').textContent =
+    formatRupiah(product.price);
+
+  document.getElementById('productDescription').textContent =
+    product.description;
+
+  document.getElementById('mainProductImage').src =
+    product.image;
 }

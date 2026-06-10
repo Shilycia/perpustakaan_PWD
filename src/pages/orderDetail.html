@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Detail</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --primary: #A30000;
+      --text-main: #111111;
+      --text-muted: #5E5E5E;
+      --text-label: #9B9B9B;
+      --border: #E5E5E5;
+      --bg-page: #F7F7F7;
+      --bg-card: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      padding: 1rem;
+    }
+
+    /* ── Back ── */
+    .btnBack {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 16px;
+    }
+
+    .btnBack:hover {
+      color: var(--text-main);
+    }
+
+    .btnBack svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ── Page header ── */
+    .pageTitle {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    .pageSub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .sectionTitle {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;      
+      padding: 10px 16px;
+      background: var(--bg-page);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Order Meta ── */
+    .orderMeta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 16px;      
+    }
+
+    .metaGroup {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .metaLabel {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-label);
+      margin-bottom: 4px;
+    }
+
+    .metaValue {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .metaValue.light {
+      font-weight: 500;
+    }
+
+    /* ── Status badges ── */
+    .statusBadge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .statusBadge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .statusBadge.packaged { color: #B07D00; }
+    .statusBadge.packaged::before { background: #E8A800; }
+    .statusBadge.in_transit { color: #A30000; }
+    .statusBadge.in_transit::before { background: #A30000; }
+    .statusBadge.delivered { color: #3A3A3A; }
+    .statusBadge.delivered::before { background: #3A3A3A; }
+
+    /* ── Items ── */
+    .itemRow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .itemRow:last-child {
+      border-bottom: none;
+    }
+
+    .itemThumb {
+      width: 60px;
+      height: 60px;
+      background: #EBEBEB;
+      flex-shrink: 0;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .itemThumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .itemInfo {
+      flex: 1;
+    }
+
+    .itemName {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .itemVariant {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .itemPrice {
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Two column ── */
+    .twoCol {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .twoCol .card {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 520px) {
+      .twoCol { grid-template-columns: 1fr; }
+    }
+
+    /* ── Info block ── */
+    .infoBlock {
+      padding: 14px 16px;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .infoBlock .name {
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .infoBlock .detail {
+      color: var(--text-muted);
+    }
+
+    .paymentRow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .paymentRow svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ── Summary ── */
+    .summaryRow {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .summaryRow span:last-child {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .summaryRow.total {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 6px;
+    }
+
+    .summaryRow.total span {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .summaryPad {
+      padding: 10px 0 14px;
+    }
+
+    /* ── Action buttons ── */
+    .btnSecondary {
+      background: transparent;
+      color: var(--text-main);
+      border: 1.5px solid var(--text-main);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 6px;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btnSecondary:hover {
+      background: var(--text-main);
+      color: #fff;
+    }
+
+    .actionRow {
+      display: flex;
+      gap: 8px;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+  <link rel="stylesheet" href="../index.css">
+</head>
+<body>
+
+  <!-- Back -->
+  <button class="btnBack" onclick="parent.navigateTo('/archivedOrder')">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+    Order History
+  </button>
+
+  <!-- Page Header -->
+  <h1 class="pageTitle" id="pageTitle">Order Detail</h1>
+  <p class="pageSub" id="pageSub">Loading...</p>
+
+  <!-- Order Meta -->
+  <div class="card">
+    <div class="orderMeta">
+      <div class="metaGroup">
+        <div class="metaLabel">Order Number</div>
+        <div class="metaValue" id="metaOrderId">—</div>
+      </div>
+      <div class="metaGroup">
+        <div class="metaLabel">Date Placed</div>
+        <div class="metaValue light" id="metaDate">—</div>
+      </div>
+      <div class="metaGroup">
+        <div class="metaLabel">Total Amount</div>
+        <div class="metaValue" id="metaTotal">—</div>
+      </div>
+      <div class="metaGroup">
+        <div class="metaLabel">Status</div>
+        <div class="metaValue" id="metaStatus">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Items Ordered -->
+  <div class="card">
+    <div class="sectionTitle">Items Ordered</div>
+    <div id="itemList" class="rounded-md"></div>
+  </div>
+
+  <!-- Delivery + Payment -->
+  <div class="twoCol">
+    <div class="card">
+      <div class="sectionTitle">Delivery Address</div>
+      <div class="infoBlock">
+        <div class="name">Rizky Fauzan</div>
+        <div class="detail">Jl. Dago No. 42<br>Bandung, Jawa Barat 40135<br>Indonesia</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sectionTitle">Payment Method</div>
+      <div class="infoBlock">
+        <div class="paymentRow">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+          </svg>
+          <span class="name">Visa •••• 4291</span>
+        </div>
+        <div class="detail">Billed on <span id="billedDate">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="card">
+    <div class="sectionTitle">Order Summary</div>
+    <div class="summaryPad">
+      <div class="summaryRow"><span>Subtotal</span><span id="summarySubtotal">—</span></div>
+      <div class="summaryRow"><span>Shipping</span><span>Free</span></div>
+      <div class="summaryRow"><span>Tax (11%)</span><span id="summaryTax">—</span></div>
+      <div class="summaryRow total"><span>Total</span><span id="summaryTotal">—</span></div>
+    </div>
+    <div class="actionRow">
+      <button class="btnSecondary" onclick="parent.navigateTo('/shop')">Buy Again</button>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script>
+    const STATUS_CONFIG = {
+      packaged:   { label: 'Packaged',   class: 'packaged' },
+      in_transit: { label: 'In Transit', class: 'in_transit' },
+      delivered:  { label: 'Delivered',  class: 'delivered' },
+    };
+
+    loadData(data => {
+      const orderId = parent.getOrderParam();
+      const order = data.orders.find(o => o.id === orderId);
+
+      if (!order) {
+        document.getElementById('pageSub').textContent = 'Order not found.';
+        return;
+      }
+
+      const status = STATUS_CONFIG[order.status] || STATUS_CONFIG.delivered;
+      const tax = Math.round(order.totalAmount * 0.11);
+      const total = order.totalAmount + tax;
+
+      // Header
+      document.getElementById('pageTitle').textContent = 'Order Detail';
+      document.getElementById('pageSub').textContent = `#${order.id} · ${order.datePlaced}`;
+
+      // Meta
+      document.getElementById('metaOrderId').textContent = `#${order.id}`;
+      document.getElementById('metaDate').textContent = order.datePlaced;
+      document.getElementById('metaTotal').textContent = formatRupiah(order.totalAmount);
+      document.getElementById('metaStatus').innerHTML = `<span class="statusBadge ${status.class}">${status.label}</span>`;
+
+      // Billed date
+      document.getElementById('billedDate').textContent = order.datePlaced;
+
+      // Items
+      document.getElementById('itemList').innerHTML = order.items.map(item => `
+        <div class="itemRow">
+          <div class="itemThumb">
+            <img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'">
+          </div>
+          <div class="itemInfo">
+            <div class="itemName">${item.name}</div>
+            <div class="itemVariant">Size: ${item.size} / ${item.color}</div>
+          </div>
+          <div class="itemPrice">${formatRupiah(item.price)}</div>
+        </div>
+      `).join('');
+
+      // Summary
+      document.getElementById('summarySubtotal').textContent = formatRupiah(order.totalAmount);
+      document.getElementById('summaryTax').textContent = formatRupiah(tax);
+      document.getElementById('summaryTotal').textContent = formatRupiah(total);
+
+     
+    });
+
+
+
+
+    // ------------------------------------------------------------------------------------------------
+    
+    window.onload = () => parent.postMessage({ iframeHeight: '100vh' }, '*');
+  </script>
+
+</body>
+</html>

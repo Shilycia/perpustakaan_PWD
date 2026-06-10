@@ -13,9 +13,13 @@
       --fg-second: #5E5E5E;
     }
 
+    html, body {
+      height: 100%;      
+    }
+
     .heroSection {
       position: relative;
-      height: 84vh;
+      height: 98vh;
       overflow: hidden;
       margin-bottom: 2rem;
       border-radius: 0.75rem;
@@ -61,7 +65,7 @@
       position: relative;
       overflow: hidden;
       border-radius: 0.5rem;
-    }
+    }    
 
     .categoryImage {
       width: 100%;
@@ -96,7 +100,7 @@
     .newsletterSection {
       position: relative;
       color: white;
-      height: 50vh;
+      height: 60vh;
       width: 100%;
       margin-bottom: 4rem;
       border-radius: 0.75rem;
@@ -133,6 +137,7 @@
       font-size: 0.875rem;
       padding: 0.625rem 1rem;
       outline: none;
+      border-radius: 6px;
     }
 
     .newsletterButton {
@@ -142,6 +147,8 @@
       font-size: 0.75rem;
       font-weight: bold;
       cursor: pointer;
+      margin-left: 0.2rem;
+      border-radius: 6px;
     }
 
     .newsletterImageWrapper {
@@ -160,7 +167,7 @@
 
     .catSubTitle{      
       font-weight: 600;
-    }
+    }    
 
     @media (max-width: 767px) {
       .heroSection {
@@ -202,9 +209,9 @@
         <h1 class="heroTitle">
           VIBES IN EVERY <span class="opacity-40">THREAD</span>
         </h1>
-        <a href="./pages/shop.html" class="inline-block mt-5 px-6 py-2.5 rounded-lg bg-white text-black font-bold w-fit hover:bg-[#A30000] hover:text-white">
+        <div class="inline-block mt-5 px-6 py-2.5 rounded-lg bg-white text-black font-bold w-fit hover:bg-[#A30000] hover:text-white" onclick="parent.navigateTo('/shop')">
           Explore Collection
-        </a>
+        </div>
       </div>
     </section>
        
@@ -219,7 +226,7 @@
      
       <div class="categoriesWrapper">
         <div class="categoryCard w-4/10 max-md:w-full max-md:h-1/2">
-          <img src="../../public/jaket.png" alt="Outerwear" class="categoryImage"/>
+          <img src="../../public/jaket.png" alt="Outerwear" class="categoryImage zoomOut"/>
           <div class="categoryOverlay">
             <p class="catSubTitle">Outerwear</p>
             <p class="text-xs">From Rp 149.000</p>
@@ -228,7 +235,7 @@
          
         <div class="flex flex-col gap-2 w-6/10 h-full max-md:w-full">        
           <div class="categoryCard h-1/2">
-            <img src="../../public/sepatu.png" alt="Architectural Soles" class="categoryImage"/>
+            <img src="../../public/sepatu.png" alt="Architectural Soles" class=" zoomOut categoryImage"/>
             <div class="categoryOverlay">
               <p class="catSubTitle">Architectural Soles</p>
               <p class="text-xs">From Rp 399.000</p>
@@ -237,13 +244,13 @@
           
           <div class="flex gap-2 h-1/2">
             <div class="categoryCard w-1/2">
-              <img src="../../public/dompet.png" alt="Accents" class="categoryImage"/>
+              <img src="../../public/dompet.png" alt="Accents" class="categoryImage zoomOut"/>
               <div class="categoryOverlay px-2 pb-2 pt-6">
                 <p class="catSubTitle">Accents</p>
               </div>
             </div>
             <div class="categoryCard w-1/2">
-              <img src="../../public/tas.png" alt="Graphics" class="categoryImage"/>
+              <img src="../../public/tas.png" alt="Graphics" class="categoryImage zoomOut"/>
               <div class="categoryOverlay px-2 pb-2 pt-6">
                 <p class="catSubTitle">Graphics</p>
               </div>
@@ -284,11 +291,29 @@
 
   <script src="../js/data.js"></script>
   <script>   
-    loadProducts(data => {
-      const container = document.getElementById('productsContainer');
-      const cards = data.products.map(product => createProductCard(product, "widthHome"));
-      container.innerHTML = cards.join('');
-    });    
+   loadData(data => {
+    const container = document.getElementById('productsContainer');
+    const cards = data.products.map(product => createProductCard(product, "widthHome"));
+    container.innerHTML = cards.join('');
+
+    // Add click handlers to product cards
+    document.querySelectorAll('.productCard').forEach(card => {
+      card.addEventListener('click', () => {
+        const product = JSON.parse(card.dataset.product);          
+        parent.navigateTo(`/detail/${product.id}`);
+      });
+    });
+
+    // Tambah ini agar iframe expand ke parent
+    setTimeout(() => {
+      window.parent.postMessage({
+        iframeHeight: document.documentElement.scrollHeight + 'px'
+      }, '*');
+    }, 100); // sedikit delay agar gambar/konten sempat render
+  });
+
+  window.parent.postMessage({ page: 'home' }, '*');
+
   </script>
 </body>
 </html>
