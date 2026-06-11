@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Checkout - Urban Velocity</title>
+        <link rel="stylesheet" href="../../public/style/global.css">
+        <link rel="stylesheet" href="../../public/style/checkout.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </head>
+    <body>
+
+        <main class="container checkout-container">
+
+            <a href="cart.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i>
+                BACK TO CART
+            </a>
+
+            <div class="checkout-layout">
+
+                <div class="checkout-forms">
+
+                    <div class="checkout-section">
+                        <h2 class="section-title">
+                            <span class="step-num">1</span>
+                            SHIPPING DETAILS
+                        </h2>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>FIRST NAME</label>
+                                <input type="text" id="chkFirstName" placeholder="John" required>
+                            </div>
+                            <div class="form-group">
+                                <label>LAST NAME</label>
+                                <input type="text" id="chkLastName" placeholder="Doe" required>
+                            </div>
+                            <div class="form-group full">
+                                <label>ADDRESS</label>
+                                <input type="text" id="chkAddress" placeholder="Jl. Senopati No. 12" required>
+                            </div>
+                            <div class="form-group">
+                                <label>CITY</label>
+                                <input type="text" id="chkCity" placeholder="Jakarta Selatan" required>
+                            </div>
+                            <div class="form-group">
+                                <label>POSTAL CODE</label>
+                                <input type="text" id="chkPostal" placeholder="12190" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="checkout-section">
+                        <h2 class="section-title">
+                            <span class="step-num">2</span>
+                            PAYMENT METHOD
+                        </h2>
+
+                        <div class="payment-method active" onclick="selectPayment(this)">
+                            <div class="payment-header">
+                                <div class="payment-label">
+                                    <div class="radio-circle">
+                                        <div class="radio-dot"></div>
+                                    </div>
+                                    <span>CREDIT OR DEBIT CARD</span>
+                                </div>
+                                <i class="fa-regular fa-credit-card payment-icon"></i>
+                            </div>
+                            <div class="payment-body">
+                                <div class="form-group full" style="margin-bottom: 15px;">
+                                    <input type="text" placeholder="Card Number">
+                                </div>
+                                <div class="form-grid" style="margin-bottom: 0;">
+                                    <div class="form-group">
+                                        <input type="text" placeholder="MM/YY">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" placeholder="CVC">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-method" onclick="selectPayment(this)">
+                            <div class="payment-header">
+                                <div class="payment-label">
+                                    <div class="radio-circle">
+                                        <div class="radio-dot"></div>
+                                    </div>
+                                    <span>VIRTUAL ACCOUNT / TRANSFER</span>
+                                </div>
+                                <i class="fa-solid fa-building-columns payment-icon"></i>
+                            </div>
+                            <div class="payment-body">
+                                <p style="font-size: 0.8rem; color: #666; line-height: 1.5;">Anda akan mendapatkan nomor Virtual Account (VA) setelah menekan tombol Complete Purchase.</p>
+                            </div>
+                        </div>
+
+                        <div class="payment-method" onclick="selectPayment(this)">
+                            <div class="payment-header">
+                                <div class="payment-label">
+                                    <div class="radio-circle">
+                                        <div class="radio-dot"></div>
+                                    </div>
+                                    <span>DIGITAL WALLET (GOPAY/OVO)</span>
+                                </div>
+                                <i class="fa-solid fa-wallet payment-icon"></i>
+                            </div>
+                            <div class="payment-body">
+                                <p style="font-size: 0.8rem; color: #666; line-height: 1.5;">Aplikasi E-Wallet akan terbuka otomatis untuk menyelesaikan pembayaran Anda.</p>
+                            </div>
+                        </div>
+
+                        <div class="security-note">
+                            <i class="fa-solid fa-lock"></i>
+                            Your transaction is secure and encrypted with 256-bit SSL technology.
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="checkout-summary">
+                    <div class="summary-card">
+                        <h2 class="summary-title">ORDER SUMMARY</h2>
+
+                        <div class="summary-items" id="summaryItemsContainer">
+                            </div>
+
+                        <div class="summary-costs">
+                            <div class="cost-row">
+                                <span>Subtotal</span>
+                                <span id="chkSubtotal">Rp 0</span>
+                            </div>
+                            <div class="cost-row">
+                                <span>Shipping</span>
+                                <span id="chkShipping">Rp 0</span>
+                            </div>
+                            <div class="cost-row">
+                                <span>Tax (11%)</span>
+                                <span id="chkTax">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <div class="total-row">
+                            <span>TOTAL</span>
+                            <span class="price-large" id="chkTotal">Rp 0</span>
+                        </div>
+
+                        <button class="btn-complete" id="btnComplete">COMPLETE PURCHASE</button>
+
+                        <p class="terms-text">BY CLICKING COMPLETE PURCHASE, YOU AGREE TO OUR TERMS OF SERVICE.</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <iframe src="../component/footer.html" id="footer-frame" scrolling="no"></iframe>
+
+        <script>
+            // --- UI Interaction untuk Payment Method ---
+            function selectPayment(selectedElement) {
+                const allMethods = document.querySelectorAll('.payment-method');
+                allMethods.forEach(method => method.classList.remove('active'));
+                selectedElement.classList.add('active');
+            }
+
+            // --- Logika Checkout Dinamis ---
+            const formatRp = (num) => 'Rp ' + Math.round(num).toLocaleString('id-ID');
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const db = window.vibesDB || (window.parent && window.parent.vibesDB);
+                const user = db ? db.getCurrentUser() : null;
+                const cart = db ? db.getCart() : [];
+
+                // Validasi Cepat: Kembalikan ke toko jika keranjang kosong atau belum login
+                if (!user || cart.length === 0) {
+                    alert("Keranjang belanja kosong atau Anda belum login.");
+                    window.location.href = 'katalog.html';
+                    return;
+                }
+
+                // 1. Pre-fill Data Profil & Alamat
+                document.getElementById('chkFirstName').value = user.firstName || '';
+                document.getElementById('chkLastName').value = user.lastName || '';
+                
+                // Coba ambil alamat default dari Address Book pengguna
+                if (user.addresses && user.addresses.length > 0) {
+                    const defAddr = user.addresses.find(a => a.isDefault) || user.addresses[0];
+                    document.getElementById('chkAddress').value = defAddr.street || '';
+                    document.getElementById('chkCity').value = defAddr.city || '';
+                    document.getElementById('chkPostal').value = defAddr.zip || '';
+                }
+
+                // 2. Render Order Summary
+                const summaryContainer = document.getElementById('summaryItemsContainer');
+                let html = '';
+                let subtotal = 0;
+
+                cart.forEach(item => {
+                    subtotal += (item.price * item.qty);
+                    html += `
+                        <div class="summary-item">
+                            <div class="item-img"><img src="${item.image}" alt="${item.name}"></div>
+                            <div class="item-info">
+                                <h4 class="item-name">${item.name.toUpperCase()}</h4>
+                                <span class="item-meta">Size: ${item.size} | Qty: ${item.qty}</span>
+                                <span class="item-price">${formatRp(item.price)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                summaryContainer.innerHTML = html;
+
+                // 3. Kalkulasi Biaya
+                let shipping = subtotal >= 7500000 ? 0 : 45000;
+                let tax = subtotal * 0.11;
+                let total = subtotal + shipping + tax;
+
+                document.getElementById('chkSubtotal').innerText = formatRp(subtotal);
+                document.getElementById('chkShipping').innerText = shipping === 0 ? 'FREE' : formatRp(shipping);
+                document.getElementById('chkTax').innerText = formatRp(tax);
+                document.getElementById('chkTotal').innerText = formatRp(total);
+
+                // 4. Proses Eksekusi Pesanan
+                document.getElementById('btnComplete').addEventListener('click', () => {
+                    const address = document.getElementById('chkAddress').value;
+                    const city = document.getElementById('chkCity').value;
+
+                    // Validasi alamat tidak boleh kosong
+                    if(!address || !city) {
+                        alert("Mohon lengkapi alamat dan kota pengiriman Anda.");
+                        return;
+                    }
+
+                    // Eksekusi fungsi createOrder di database
+                    const orderId = db.createOrder();
+                    if(orderId) {
+                        // --- OVERRIDE STATUS KE 'ON PROCESS' ---
+                        let rawOrders = JSON.parse(localStorage.getItem('vibes_orders')) || [];
+                        let index = rawOrders.findIndex(o => o.orderId === orderId);
+                        if(index > -1) {
+                            rawOrders[index].status = 'ON PROCESS';
+                            localStorage.setItem('vibes_orders', JSON.stringify(rawOrders));
+                        }
+                        // ----------------------------------------
+
+                        alert(`Pembayaran Berhasil! Nomor Pesanan Anda: ${orderId}\nAnda mendapatkan poin tambahan dari transaksi ini.`);
+                        // Alihkan ke History
+                        window.location.href = 'history.html';
+                    } else {
+                        alert("Terjadi kesalahan saat memproses pesanan.");
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

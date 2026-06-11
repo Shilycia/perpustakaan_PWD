@@ -1,0 +1,39 @@
+/* --- GLOBAL RESET & BASE STYLES --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #ffffff;
+    color: #111111;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Shared Layout Containers */
+.container {
+    width: 80vw;
+    margin: 0 auto;
+}
+
+/* Footer Frame Embedding Styling */
+#footer-frame {
+    width: 100%;
+    height: 380px;
+    border: none;
+    margin-top: 40px;
+    display: block;
+}

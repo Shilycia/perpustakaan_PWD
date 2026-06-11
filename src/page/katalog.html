@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Urban Essentials — Shop</title>
+        <link rel="stylesheet" href="../../public/style/global.css">
+        <link rel="stylesheet" href="../../public/style/katalog.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet">
+    </head>
+    <body>
+        <div class="page-wrapper">
+            <aside class="sidebar">
+                <div class="filter-group">
+                    <h3>Category</h3>
+                    <ul id="categoryFilter">
+                        <li class="active">All</li>
+                        <li>Outerwear</li>
+                        <li>Tops</li>
+                        <li>Bottoms</li>
+                        <li>Footwear</li>
+                        <li>Accessories</li>
+                    </ul>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Size</h3>
+                    <div class="size-grid" id="sizeFilter">
+                        <div class="size-pill active">All</div>
+                        <div class="size-pill">XS</div>
+                        <div class="size-pill">S</div>
+                        <div class="size-pill">M</div>
+                        <div class="size-pill">L</div>
+                        <div class="size-pill">XL</div>
+                        <div class="size-pill">XXL</div>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Max Price</h3>
+                    <div class="price-range">
+                        <input
+                            type="range"
+                            class="range-slider"
+                            id="priceSlider"
+                            min="0"
+                            max="10000000"
+                            step="100000"
+                            value="10000000">
+                        <div class="price-labels">
+                            <span>Rp 0</span>
+                            <span id="priceLabel">Rp 10.000.000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Vibe</h3>
+                    <div class="vibe-tags" id="vibeFilter">
+                        <div class="vibe-tag">Monochrome</div>
+                        <div class="vibe-tag">Techwear</div>
+                        <div class="vibe-tag">High Contrast</div>
+                        <div class="vibe-tag">Minimalist</div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="catalog-header">
+                    <h1 class="catalog-title">URBAN ESSENTIALS</h1>
+                    <div class="catalog-meta">
+                        <span id="product-count">Showing 0 of 0 items</span>
+                        <select class="sort-select" id="sortSelect">
+                            <option value="Newest">Sort by: Newest</option>
+                            <option value="Price: Low to High">Price: Low to High</option>
+                            <option value="Price: High to Low">Price: High to Low</option>
+                            <option value="Most Popular">Most Popular</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="products-grid" id="catalog-grid"></div>
+
+                <div class="pagination" id="paginationContainer"></div>
+            </main>
+        </div>
+
+        <iframe src="../component/footer.html" id="footer-frame" scrolling="no"></iframe>
+
+        <script>
+            // ==========================================
+            // 1. GLOBAL STATE & DATA ==========================================
+            let allProducts = [];
+
+            // Status Filter Saat Ini
+            let state = {
+                category: 'All',
+                size: 'All',
+                maxPrice: 10000000,
+                vibes: [],
+                sort: 'Newest',
+                page: 1,
+                limit: 6 // Menampilkan 6 produk per halaman
+            };
+
+            // Format Uang Rupiah
+            const formatRp = (num) => 'Rp ' + num.toLocaleString('id-ID');
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const db = window.vibesDB || (window.parent && window.parent.vibesDB);
+                let rawProducts = db
+                    ? db.getProducts()
+                    : [];
+
+                // MOCKUP DATA TAMBAHAN: Karena di db.js kita tidak punya data 'size' dan
+                // 'vibe', kita suntikkan data dummy secara acak agar filter size & vibe bisa
+                // berfungsi untuk demo.
+                allProducts = rawProducts.map(p => {
+                    return {
+                        ...p,
+                        sizes: [
+                            'XS',
+                            'S',
+                            'M',
+                            'L',
+                            'XL',
+                            'XXL'
+                        ], // Asumsikan semua ukuran tersedia
+                        vibes: p.id % 2 === 0
+                            ? ['Monochrome', 'Minimalist']
+                            : ['Techwear', 'High Contrast']
+                    };
+                });
+
+                setupEventListeners();
+                applyFilters(); // Render pertama kali
+            });
+
+            // ==========================================
+            // 2. SETUP EVENT LISTENERS (UI INTERACTION)
+            // ==========================================
+            function setupEventListeners() {
+                // Kategori
+                document
+                    .querySelectorAll('#categoryFilter li')
+                    .forEach(item => {
+                        item.addEventListener('click', (e) => {
+                            document
+                                .querySelectorAll('#categoryFilter li')
+                                .forEach(i => i.classList.remove('active'));
+                            item
+                                .classList
+                                .add('active');
+                            state.category = e.target.innerText;
+                            state.page = 1; // Reset halaman
+                            applyFilters();
+                        });
+                    });
+
+                // Ukuran (Size)
+                document
+                    .querySelectorAll('#sizeFilter .size-pill')
+                    .forEach(pill => {
+                        pill.addEventListener('click', (e) => {
+                            document
+                                .querySelectorAll('#sizeFilter .size-pill')
+                                .forEach(p => p.classList.remove('active'));
+                            pill
+                                .classList
+                                .add('active');
+                            state.size = e.target.innerText;
+                            state.page = 1;
+                            applyFilters();
+                        });
+                    });
+
+                // Range Harga
+                const priceSlider = document.getElementById('priceSlider');
+                const priceLabel = document.getElementById('priceLabel');
+                priceSlider.addEventListener('input', (e) => {
+                    state.maxPrice = parseInt(e.target.value);
+                    priceLabel.innerText = formatRp(state.maxPrice);
+                });
+                priceSlider.addEventListener('change', () => {
+                    state.page = 1;
+                    applyFilters();
+                });
+
+                // Vibe
+                document
+                    .querySelectorAll('#vibeFilter .vibe-tag')
+                    .forEach(tag => {
+                        tag.addEventListener('click', (e) => {
+                            tag
+                                .classList
+                                .toggle('active');
+                            const vibeName = e.target.innerText;
+                            if (state.vibes.includes(vibeName)) {
+                                state.vibes = state
+                                    .vibes
+                                    .filter(v => v !== vibeName);
+                            } else {
+                                state
+                                    .vibes
+                                    .push(vibeName);
+                            }
+                            state.page = 1;
+                            applyFilters();
+                        });
+                    });
+
+                // Pengurutan (Sort)
+                document
+                    .getElementById('sortSelect')
+                    .addEventListener('change', (e) => {
+                        state.sort = e.target.value;
+                        state.page = 1;
+                        applyFilters();
+                    });
+            }
+
+            // ==========================================
+            // 3. ENGINE FILTERING & PENGURUTAN ==========================================
+            function applyFilters() {
+                let filtered = allProducts.filter(p => {
+                    // Filter Kategori
+                    if (state.category !== 'All' && p.category.toUpperCase() !== state.category.toUpperCase()) 
+                        return false;
+                    
+                    // Filter Max Harga
+                    if (p.price > state.maxPrice) 
+                        return false;
+                    
+                    // Filter Ukuran
+                    if (state.size !== 'All' && !p.sizes.includes(state.size)) 
+                        return false;
+                    
+                    // Filter Vibe (Menampilkan produk yang cocok dengan SALAH SATU vibe yang
+                    // dipilih)
+                    if (state.vibes.length > 0) {
+                        if (!state.vibes.some(v => p.vibes.includes(v))) 
+                            return false;
+                        }
+                    
+                    return true;
+                });
+
+                // Lakukan Pengurutan (Sorting)
+                if (state.sort === 'Price: Low to High') {
+                    filtered.sort((a, b) => a.price - b.price);
+                } else if (state.sort === 'Price: High to Low') {
+                    filtered.sort((a, b) => b.price - a.price);
+                } else if (state.sort === 'Most Popular') {
+                    filtered.sort((a, b) => b.id - a.id); // Dummy sort descending by ID
+                } else {
+                    filtered.sort((a, b) => a.id - b.id); // Newest (Default ID Ascending)
+                }
+
+                renderProducts(filtered);
+            }
+
+            // ==========================================
+            // 4. ENGINE RENDERING & PAGINATION ==========================================
+            function renderProducts(productsToRender) {
+                const grid = document.getElementById('catalog-grid');
+
+                // Hitung Pagination
+                const totalPages = Math.ceil(productsToRender.length / state.limit) || 1;
+                if (state.page > totalPages) 
+                    state.page = totalPages;
+                
+                const startIdx = (state.page - 1) * state.limit;
+                const paginatedItems = productsToRender.slice(startIdx, startIdx + state.limit);
+
+                // Update Tulisan Jumlah Item
+                const startCount = productsToRender.length === 0
+                    ? 0
+                    : startIdx + 1;
+                const endCount = startIdx + paginatedItems.length;
+                document
+                    .getElementById('product-count')
+                    .innerText = `Showing ${startCount} - ${endCount} of ${productsToRender.length} items`;
+
+                // Render Kartu Produk
+                let html = '';
+                paginatedItems.forEach(p => {
+                    let badgeHtml = '';
+                    if (p.badge === 'New Arrival') 
+                        badgeHtml = `<span class="badge badge-new">New Arrival</span>`;
+                    else if (p.badge === 'Sold Out') 
+                        badgeHtml = `<span class="badge badge-sold">Sold Out</span>`;
+                    else if (p.badge === 'Limited Edition') 
+                        badgeHtml = `<span class="badge badge-limited">Limited Edition</span>`;
+                    
+                    html += `
+                    <div class="product-card" onclick="window.location.href='./detailproduct.html?id=${p.id}'">
+                        <div class="product-image-wrap">
+                            ${badgeHtml}
+                            <img src="${p.image}" alt="${p.name}">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-row">
+                                <span class="product-name">${p.name}</span>
+                                <span class="product-price">${formatRp(
+                        p.price
+                    )}</span>
+                            </div>
+                            <div class="product-variant">${p.category}</div>
+                        </div>
+                    </div>`;
+                });
+
+                // Pesan jika kosong
+                grid.innerHTML = html || '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666; f' +
+                        'ont-size: 1rem;">Opps, tidak ada produk yang sesuai dengan filtermu.</p>';
+
+                renderPagination(totalPages);
+            }
+
+            function renderPagination(totalPages) {
+                const paginationContainer = document.getElementById('paginationContainer');
+
+                if (totalPages <= 1) {
+                    paginationContainer.innerHTML = '';
+                    return;
+                }
+
+                let html = `<button class="page-btn arrow" onclick="changePage(${state.page - 1})" ${state.page === 1
+                    ? 'disabled style="opacity:0.5; cursor:not-allowed;"'
+                    : ''}>&#8249;</button>`;
+
+                for (let i = 1; i <= totalPages; i++) {
+                    html += `<button class="page-btn ${i === state.page
+                        ? 'active'
+                        : ''}" onclick="changePage(${i})">${i}</button>`;
+                }
+
+                html += `<button class="page-btn arrow" onclick="changePage(${state.page + 1})" ${state.page === totalPages
+                    ? 'disabled style="opacity:0.5; cursor:not-allowed;"'
+                    : ''}>&#8250;</button>`;
+
+                paginationContainer.innerHTML = html;
+            }
+
+            // Global fungsi untuk diklik oleh tombol pagination
+            window.changePage = function (newPage) {
+                state.page = newPage;
+                applyFilters(); // Rekalkulasi & render ulang
+
+                // Auto-scroll ke atas katalog setelah pindah halaman
+                document
+                    .querySelector('.catalog-header')
+                    .scrollIntoView({behavior: 'smooth'});
+            };
+        </script>
+    </body>
+</html>

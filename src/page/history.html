@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order History - Urban Velocity</title>
+        <link rel="stylesheet" href="../../public/style/global.css">
+        <link rel="stylesheet" href="../../public/style/history.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            /* --- Gaya Modal Global --- */
+            .modal-overlay {
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0, 0, 0, 0.8); display: none;
+                align-items: center; justify-content: center; z-index: 9999;
+            }
+            .modal-card {
+                background: #ffffff; width: 100%; max-width: 500px;
+                border-radius: 6px; padding: 30px; box-sizing: border-box;
+                max-height: 90vh; overflow-y: auto;
+            }
+            .modal-card h3 {
+                margin-top: 0; font-size: 1.2rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;
+            }
+            
+            /* --- Modal Pembatalan (Cancel) --- */
+            .modal-card p {
+                font-size: 0.85rem; color: #666; margin-bottom: 25px; line-height: 1.5;
+            }
+            .form-group-modal {
+                display: flex; flex-direction: column; margin-bottom: 25px;
+            }
+            .form-group-modal label {
+                font-size: 0.75rem; font-weight: 700; color: #111; margin-bottom: 8px; text-transform: uppercase;
+            }
+            .form-group-modal select {
+                padding: 14px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem; outline: none; font-family: inherit;
+            }
+            .modal-actions {
+                display: flex; gap: 15px;
+            }
+            .modal-actions button {
+                flex: 1;
+            }
+            .btn-danger-solid {
+                background: #a80000; border: 1px solid #a80000; color: #ffffff; padding: 12px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: 0.2s;
+            }
+            .btn-danger-solid:hover { background: #800000; }
+            
+            /* --- Modal Detail Pesanan --- */
+            .detail-row {
+                display: flex; justify-content: space-between; margin-bottom: 15px;
+                font-size: 0.85rem; padding-bottom: 15px; border-bottom: 1px solid #eee;
+            }
+            .detail-row:last-child { border-bottom: none; margin-bottom: 25px; padding-bottom: 0; }
+            .detail-label { color: #666; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+            .detail-value { font-weight: 800; text-align: right; }
+            .item-list-modal { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+            .item-list-modal .product-item { margin-bottom: 15px; }
+
+            /* Status warna dibatalkan */
+            .status-canceled { color: #a80000; }
+            .status-canceled .dot { background-color: #a80000; }
+        </style>
+    </head>
+    <body>
+        <main class="container history-container">
+
+            <div class="history-header">
+                <div class="header-text">
+                    <h1>ORDER HISTORY</h1>
+                    <p>Review your past acquisitions and track current shipments from the Urban Velocity archives.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-outline">FILTER</button>
+                    <button class="btn-outline">EXPORT CSV</button>
+                </div>
+            </div>
+
+            <div class="history-tabs">
+                <div class="tab-item active" onclick="switchTab(this)">ALL</div>
+                <div class="tab-item" onclick="switchTab(this)">WAITING PAYMENT</div>
+                <div class="tab-item" onclick="switchTab(this)">ON PROCESS</div>
+                <div class="tab-item" onclick="switchTab(this)">ON DELIVERY</div>
+                <div class="tab-item" onclick="switchTab(this)">DELIVERED</div>
+                <div class="tab-item" onclick="switchTab(this)">CANCELED</div>
+            </div>
+
+            <div class="history-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Search by Order ID, Item Name, or Delivery Status...">
+            </div>
+
+            <div class="orders-list" id="ordersContainer">
+                </div>
+
+            <div class="history-footer">
+                <button class="btn-outline btn-archive">
+                    VIEW ARCHIVE <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <p id="orderCountText">SHOWING 0 OF 0 PREVIOUS ORDERS</p>
+            </div>
+
+        </main>
+
+        <div id="cancelModal" class="modal-overlay">
+            <div class="modal-card">
+                <h3>Cancel Order</h3>
+                <p>We're sorry to see you cancel. Please let us know why you are canceling this order to help us improve.</p>
+                
+                <div class="form-group-modal">
+                    <label>Cancellation Reason</label>
+                    <select id="cancelReason">
+                        <option value="">Select a reason...</option>
+                        <option value="Change of mind">Change of mind</option>
+                        <option value="Found a better price elsewhere">Found a better price elsewhere</option>
+                        <option value="Ordered by mistake">Ordered by mistake</option>
+                        <option value="Shipping time is too long">Shipping time is too long</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn-outline" onclick="closeCancelModal()">BACK</button>
+                    <button class="btn-danger-solid" onclick="submitCancel()">CONFIRM CANCEL</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="detailModal" class="modal-overlay">
+            <div class="modal-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <h3>Order Details</h3>
+                    <button style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#666;" onclick="closeDetailModal()">&times;</button>
+                </div>
+                <p id="detailOrderId" style="font-weight: 800; color: #111; margin-top:-5px; margin-bottom: 20px;">#ORD-XXXXXX</p>
+
+                <div class="item-list-modal" id="detailItemsContainer"></div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Date Placed</span>
+                    <span class="detail-value" id="detailDate">Oct 24, 2023</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Current Status</span>
+                    <span class="detail-value" id="detailStatus" style="color: #a80000;">ON PROCESS</span>
+                </div>
+                <div class="detail-row" id="detailCancelRow" style="display:none;">
+                    <span class="detail-label" style="color: #a80000;">Cancel Reason</span>
+                    <span class="detail-value" id="detailCancelReason" style="color: #a80000; font-weight:600;">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total Amount</span>
+                    <span class="detail-value" id="detailTotal" style="font-size: 1.1rem;">Rp 0</span>
+                </div>
+                
+                <button class="btn-solid" style="width: 100%; margin-top: 10px;" onclick="closeDetailModal()">CLOSE</button>
+            </div>
+        </div>
+
+        <iframe src="../component/footer.html" id="footer-frame" scrolling="no"></iframe>
+
+        <script>
+            let allOrders = [];
+            let currentTab = 'ALL';
+            let currentSearch = '';
+            let currentCancelOrderId = null; 
+
+            const formatRp = (num) => 'Rp ' + Math.round(num).toLocaleString('id-ID');
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const db = window.vibesDB || (window.parent && window.parent.vibesDB);
+                const user = db ? db.getCurrentUser() : null;
+                const container = document.getElementById('ordersContainer');
+
+                if (!user) {
+                    container.innerHTML = '<p style="text-align:center; padding:60px 20px; color:#888;">Silakan login terlebih dahulu untuk melihat riwayat pesanan Anda.</p>';
+                    return;
+                }
+
+                allOrders = db.getOrders();
+                
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    currentSearch = e.target.value.toLowerCase();
+                    applyFilters();
+                });
+
+                applyFilters();
+            });
+
+            function switchTab(selectedElement) {
+                document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+                selectedElement.classList.add('active');
+                currentTab = selectedElement.innerText.trim();
+                applyFilters(); 
+            }
+
+            function applyFilters() {
+                let filtered = allOrders;
+
+                if (currentTab !== 'ALL') {
+                    filtered = filtered.filter(o => o.status.toUpperCase() === currentTab);
+                }
+
+                if (currentSearch !== '') {
+                    filtered = filtered.filter(o => {
+                        const matchOrderId = o.orderId.toLowerCase().includes(currentSearch);
+                        const matchItemName = o.items.some(item => item.name.toLowerCase().includes(currentSearch));
+                        return matchOrderId || matchItemName;
+                    });
+                }
+
+                renderOrders(filtered);
+            }
+
+            function updateOrderStatus(orderId, newStatus, reason = null) {
+                let rawOrders = JSON.parse(localStorage.getItem('vibes_orders')) || [];
+                let index = rawOrders.findIndex(o => o.orderId === orderId);
+                if(index > -1) {
+                    rawOrders[index].status = newStatus;
+                    if(reason) rawOrders[index].cancelReason = reason;
+                    localStorage.setItem('vibes_orders', JSON.stringify(rawOrders));
+                }
+                
+                let localIndex = allOrders.findIndex(o => o.orderId === orderId);
+                if(localIndex > -1) {
+                    allOrders[localIndex].status = newStatus;
+                    if(reason) allOrders[localIndex].cancelReason = reason;
+                }
+            }
+
+            // --- AKSI TOMBOL STATUS ---
+
+            function payOrder(orderId) {
+                updateOrderStatus(orderId, 'ON PROCESS');
+                alert(`Payment Successful! Order ${orderId} is now being processed.`);
+                applyFilters(); 
+            }
+
+            function trackOrder(orderId) {
+                const order = allOrders.find(o => o.orderId === orderId);
+                if(!order) return;
+
+                const currentStat = order.status.toUpperCase();
+                let nextStat = '';
+
+                if(currentStat === 'ON PROCESS') {
+                    nextStat = 'ON DELIVERY';
+                    alert(`Pesanan ${orderId} telah diserahkan ke kurir (ON DELIVERY).`);
+                } else if(currentStat === 'ON DELIVERY') {
+                    nextStat = 'DELIVERED';
+                    alert(`Pesanan ${orderId} telah diterima oleh pelanggan (DELIVERED).`);
+                } else {
+                    return; 
+                }
+
+                updateOrderStatus(orderId, nextStat);
+                applyFilters();
+            }
+
+            // --- FUNGSI BUY AGAIN (BARU) ---
+            function buyAgain(orderId) {
+                const db = window.vibesDB || (window.parent && window.parent.vibesDB);
+                if (!db) return;
+
+                const order = allOrders.find(o => o.orderId === orderId);
+                if (!order || !order.items) return;
+
+                // Ambil keranjang saat ini
+                let currentCart = db.getCart() || [];
+                
+                // Masukkan barang-barang dari history ke keranjang dengan ID baru
+                order.items.forEach(item => {
+                    const newItem = {
+                        ...item,
+                        cartItemId: 'ci_' + Date.now() + Math.floor(Math.random() * 1000)
+                    };
+                    currentCart.push(newItem);
+                });
+
+                // Simpan ke database
+                db.saveCart(currentCart);
+                
+                // Lempar ke halaman Checkout
+                alert('Pesanan lama berhasil ditambahkan. Mengarahkan ke Checkout...');
+                window.location.href = 'checkout.html';
+            }
+
+            // --- MODAL PEMBATALAN ---
+            function openCancelModal(orderId) {
+                currentCancelOrderId = orderId;
+                document.getElementById('cancelReason').value = ''; 
+                document.getElementById('cancelModal').style.display = 'flex';
+            }
+
+            function closeCancelModal() {
+                currentCancelOrderId = null;
+                document.getElementById('cancelModal').style.display = 'none';
+            }
+
+            function submitCancel() {
+                const reason = document.getElementById('cancelReason').value;
+                if(!reason) {
+                    alert('Please select a cancellation reason.');
+                    return;
+                }
+                
+                updateOrderStatus(currentCancelOrderId, 'CANCELED', reason);
+                alert(`Order ${currentCancelOrderId} has been successfully canceled.`);
+                closeCancelModal();
+                applyFilters(); 
+            }
+
+            // --- MODAL DETAIL ---
+            function openDetailModal(orderId) {
+                const order = allOrders.find(o => o.orderId === orderId);
+                if(!order) return;
+
+                document.getElementById('detailOrderId').innerText = order.orderId;
+                document.getElementById('detailDate').innerText = order.date;
+                document.getElementById('detailStatus').innerText = order.status;
+                document.getElementById('detailTotal').innerText = formatRp(order.total);
+
+                let itemsHtml = '';
+                order.items.forEach(item => {
+                    itemsHtml += `
+                        <div class="product-item">
+                            <div class="product-img" style="background: #f5f5f5; width: 60px; height: 60px;">
+                                <img src="${item.image}" alt="${item.name}">
+                            </div>
+                            <div class="product-info">
+                                <span class="product-name" style="font-size:0.75rem;">${item.name.toUpperCase()}</span>
+                                <span class="product-variant" style="font-size:0.65rem;">Size: ${item.size} | Qty: ${item.qty}</span>
+                                <span class="product-price" style="font-size:0.8rem;">${formatRp(item.price * item.qty)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('detailItemsContainer').innerHTML = itemsHtml;
+
+                const cancelRow = document.getElementById('detailCancelRow');
+                if(order.status.toUpperCase() === 'CANCELED' && order.cancelReason) {
+                    cancelRow.style.display = 'flex';
+                    document.getElementById('detailCancelReason').innerText = order.cancelReason;
+                } else {
+                    cancelRow.style.display = 'none';
+                }
+
+                document.getElementById('detailModal').style.display = 'flex';
+            }
+
+            function closeDetailModal() {
+                document.getElementById('detailModal').style.display = 'none';
+            }
+
+            // --- RENDER DAFTAR KARTU ---
+            function renderOrders(ordersToRender) {
+                const container = document.getElementById('ordersContainer');
+                const countText = document.getElementById('orderCountText');
+
+                if (ordersToRender.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; padding:60px 20px; color:#888; border: 1px dashed #ccc;">Tidak ada pesanan yang ditemukan.</p>';
+                    countText.innerText = `SHOWING 0 OF ${allOrders.length} PREVIOUS ORDERS`;
+                    return;
+                }
+
+                let html = '';
+                ordersToRender.forEach(order => {
+                    
+                    const statusVal = order.status.toUpperCase();
+                    let statusClass = 'status-transit'; 
+                    let actionButtons = '';
+
+                    // Variasi warna status & tombol aksi dinamis (BUY AGAIN DITAMBAHKAN ONCLICK)
+                    if (statusVal === 'DELIVERED') {
+                        statusClass = 'status-delivered'; 
+                        actionButtons = `
+                            <button class="btn-outline" onclick="buyAgain('${order.orderId}')">BUY AGAIN</button>
+                            <button class="btn-outline" onclick="openDetailModal('${order.orderId}')">DETAILS</button>
+                        `;
+                    } else if (statusVal === 'WAITING PAYMENT') {
+                        actionButtons = `
+                            <button class="btn-solid" onclick="payOrder('${order.orderId}')">PAY NOW</button>
+                            <button class="btn-outline" onclick="openCancelModal('${order.orderId}')">CANCEL</button>
+                        `;
+                    } else if (statusVal === 'CANCELED') {
+                        statusClass = 'status-canceled'; 
+                        actionButtons = `
+                            <button class="btn-outline" onclick="openDetailModal('${order.orderId}')">DETAILS</button>
+                        `;
+                    } else {
+                        actionButtons = `
+                            <button class="btn-solid" onclick="trackOrder('${order.orderId}')">TRACK ORDER</button>
+                            <button class="btn-outline" onclick="openDetailModal('${order.orderId}')">DETAILS</button>
+                        `;
+                    }
+
+                    let itemsHtml = '';
+                    order.items.forEach(item => {
+                        itemsHtml += `
+                            <div class="product-item">
+                                <div class="product-img" style="background: #f5f5f5;">
+                                    <img src="${item.image}" alt="${item.name}">
+                                </div>
+                                <div class="product-info">
+                                    <span class="product-name">${item.name.toUpperCase()}</span>
+                                    <span class="product-variant">Size: ${item.size} | Qty: ${item.qty}</span>
+                                    <span class="product-price">${formatRp(item.price * item.qty)}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    let cancelInfo = '';
+                    if (statusVal === 'CANCELED' && order.cancelReason) {
+                        cancelInfo = `<div style="width: 100%; margin-top: 15px; padding: 15px; background: #fff0f0; border-left: 3px solid #a80000; font-size: 0.8rem; color: #a80000;">
+                                        <strong>Cancellation Reason:</strong> ${order.cancelReason}
+                                      </div>`;
+                    }
+
+                    html += `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-meta">
+                                    <div class="meta-group">
+                                        <span class="meta-label">ORDER NUMBER</span>
+                                        <span class="meta-value">${order.orderId}</span>
+                                    </div>
+                                    <div class="meta-group">
+                                        <span class="meta-label">DATE PLACED</span>
+                                        <span class="meta-value">${order.date}</span>
+                                    </div>
+                                    <div class="meta-group">
+                                        <span class="meta-label">TOTAL AMOUNT</span>
+                                        <span class="meta-value">${formatRp(order.total)}</span>
+                                    </div>
+                                    <div class="meta-group">
+                                        <span class="meta-label">STATUS</span>
+                                        <span class="status-indicator ${statusClass}">
+                                            <span class="dot"></span> ${statusVal}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="order-actions">
+                                    ${actionButtons}
+                                </div>
+                            </div>
+                            <div class="order-body" style="flex-direction: column;">
+                                <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+                                    ${itemsHtml}
+                                </div>
+                                ${cancelInfo}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                countText.innerText = `SHOWING ${ordersToRender.length} OF ${allOrders.length} PREVIOUS ORDERS`;
+            }
+        </script>
+    </body>
+</html>

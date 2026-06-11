@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shopping Bag - Urban Velocity</title>
+        <link rel="stylesheet" href="../../public/style/global.css">
+        <link rel="stylesheet" href="../../public/style/cart.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </head>
+    <body>
+        <main class="container cart-container">
+            <h1 class="page-title">Shopping Bag</h1>
+
+            <div class="cart-layout">
+                <div class="cart-items-section">
+                    
+                    <div id="cartItemsContainer">
+                        </div>
+
+                    <div class="also-like-section" id="alsoLikeSection">
+                        <h2>YOU MAY ALSO LIKE</h2>
+                        <div class="also-like-grid">
+                            <div class="also-like-card" onclick="window.location.href='detailproduct.html?id=4'" style="cursor:pointer;">
+                                <div class="also-like-img">
+                                    <span class="badge-new">NEW</span>
+                                    <img src="../../public/img/id 4.png" alt="Industrial Chain Belt">
+                                </div>
+                                <div class="also-like-info">
+                                    <span class="also-like-title">INDUSTRIAL CHAIN BELT</span>
+                                    <span class="also-like-price">Rp 450.000</span>
+                                </div>
+                            </div>
+                            <div class="also-like-card" onclick="window.location.href='detailproduct.html?id=10'" style="cursor:pointer;">
+                                <div class="also-like-img">
+                                    <img src="../../public/img/id 10.png" alt="Modular Commuter Pack">
+                                </div>
+                                <div class="also-like-info">
+                                    <span class="also-like-title">MODULAR COMMUTER PACK</span>
+                                    <span class="also-like-price">Rp 2.100.000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="cart-summary-section">
+                    <div class="summary-card" id="summaryCard">
+                        <h2 class="summary-title">ORDER SUMMARY</h2>
+
+                        <div class="summary-row">
+                            <span>SUBTOTAL</span>
+                            <span id="subtotalEl">Rp 0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>ESTIMATED SHIPPING</span>
+                            <span id="shippingEl">Rp 0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>TAX (11%)</span>
+                            <span id="taxEl">Rp 0</span>
+                        </div>
+                        <div class="summary-row" id="discountRow" style="display:none; color: #a80000; font-weight: bold;">
+                            <span>DISCOUNT</span>
+                            <span id="discountEl">- Rp 0</span>
+                        </div>
+
+                        <div class="summary-total">
+                            <span>TOTAL</span>
+                            <span class="total-price" id="totalEl">Rp 0</span>
+                        </div>
+
+                        <div class="promo-section">
+                            <span class="promo-label">PROMO CODE</span>
+                            <div class="promo-input-group">
+                                <input type="text" id="promoCodeInput" placeholder="ENTER CODE (Try: VIBES)">
+                                <button type="button" onclick="applyPromo()">APPLY</button>
+                            </div>
+                        </div>
+
+                        <button class="checkout-btn" id="checkoutBtn" onclick="goToCheckout()">CHECKOUT</button>
+
+                        <div class="summary-info">
+                            <p><i class="fa-solid fa-truck"></i> Free shipping on orders over Rp 7.500.000</p>
+                            <p><i class="fa-solid fa-lock"></i> Secure encrypted checkout</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <iframe src="../component/footer.html" id="footer-frame" scrolling="no"></iframe>
+
+        <script>
+            let db;
+            let currentDiscount = 0;
+            const formatRp = (num) => 'Rp ' + Math.round(num).toLocaleString('id-ID');
+
+            document.addEventListener('DOMContentLoaded', () => {
+                db = window.vibesDB || (window.parent && window.parent.vibesDB);
+                renderCart();
+            });
+
+            // 1. Fungsi Utama Merender Keranjang
+            function renderCart() {
+                const cartContainer = document.getElementById('cartItemsContainer');
+                const cart = db ? db.getCart() : [];
+                
+                // Jika Keranjang Kosong
+                if (cart.length === 0) {
+                    cartContainer.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; border: 1px dashed #ccc; margin-bottom: 40px;">
+                            <i class="fa-solid fa-cart-shopping" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                            <h2 style="margin-bottom: 15px;">Your bag is empty</h2>
+                            <p style="color: #666; margin-bottom: 25px;">Looks like you haven't added anything to your cart yet.</p>
+                            <button onclick="window.location.href='katalog.html'" style="background: #111; color: #fff; border: none; padding: 12px 24px; cursor: pointer; font-weight: bold; border-radius: 4px;">CONTINUE SHOPPING</button>
+                        </div>
+                    `;
+                    updateSummary(0);
+                    return;
+                }
+
+                // Jika Ada Isinya
+                let html = '';
+                let subtotal = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.qty;
+                    subtotal += itemTotal;
+
+                    html += `
+                    <div class="cart-item">
+                        <button class="remove-btn" onclick="removeItem('${item.cartItemId}')">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        <div class="item-image" style="background-color: #f5f5f5;">
+                            <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-top">
+                                <h3 class="item-title">${item.name.toUpperCase()}</h3>
+                                <span class="item-variant">SIZE: ${item.size}</span>
+                            </div>
+                            <div class="item-bottom">
+                                <div class="quantity-control">
+                                    <button class="qty-btn" onclick="updateQty('${item.cartItemId}', ${item.qty - 1})">-</button>
+                                    <span class="qty-num">${item.qty}</span>
+                                    <button class="qty-btn" onclick="updateQty('${item.cartItemId}', ${item.qty + 1})">+</button>
+                                </div>
+                                <div class="item-price">${formatRp(itemTotal)}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+
+                cartContainer.innerHTML = html;
+                updateSummary(subtotal);
+            }
+
+            // 2. Kalkulasi Ringkasan Harga
+            function updateSummary(subtotal) {
+                const checkoutBtn = document.getElementById('checkoutBtn');
+                const summaryCard = document.getElementById('summaryCard');
+
+                if(subtotal === 0) {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.style.opacity = '0.5';
+                    checkoutBtn.style.cursor = 'not-allowed';
+                    
+                    document.getElementById('subtotalEl').innerText = formatRp(0);
+                    document.getElementById('shippingEl').innerText = formatRp(0);
+                    document.getElementById('taxEl').innerText = formatRp(0);
+                    document.getElementById('totalEl').innerText = formatRp(0);
+                    return;
+                }
+
+                checkoutBtn.disabled = false;
+                checkoutBtn.style.opacity = '1';
+                checkoutBtn.style.cursor = 'pointer';
+
+                // Logika Ongkir Gratis di atas 7.5jt
+                let shipping = subtotal >= 7500000 ? 0 : 45000;
+                let tax = subtotal * 0.11; // Pajak 11%
+                let total = subtotal + shipping + tax - currentDiscount;
+
+                // Proteksi jika total minus
+                if (total < 0) total = 0;
+
+                document.getElementById('subtotalEl').innerText = formatRp(subtotal);
+                document.getElementById('shippingEl').innerText = shipping === 0 ? 'FREE' : formatRp(shipping);
+                document.getElementById('taxEl').innerText = formatRp(tax);
+                document.getElementById('totalEl').innerText = formatRp(total);
+
+                if(currentDiscount > 0) {
+                    document.getElementById('discountRow').style.display = 'flex';
+                    document.getElementById('discountEl').innerText = '- ' + formatRp(currentDiscount);
+                }
+            }
+
+            // 3. Update Quantity
+            function updateQty(cartItemId, newQty) {
+                if (newQty < 1) return; // Mencegah qty 0
+                db.updateCartQty(cartItemId, newQty);
+                renderCart(); // Render ulang keranjang
+            }
+
+            // 4. Hapus Item
+            function removeItem(cartItemId) {
+                if(confirm('Hapus item ini dari keranjang?')) {
+                    db.removeFromCart(cartItemId);
+                    renderCart();
+                }
+            }
+
+            // 5. Fitur Kode Promo
+            function applyPromo() {
+                const code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
+                if(code === 'VIBES') {
+                    currentDiscount = 100000; // Diskon 100k
+                    alert('Promo code applied: Rp 100.000 OFF!');
+                    renderCart(); // Hitung ulang
+                } else {
+                    alert('Kode promo tidak valid atau sudah kadaluarsa.');
+                }
+            }
+
+            // 6. Checkout
+            function goToCheckout() {
+                const cart = db ? db.getCart() : [];
+                if(cart.length === 0) return;
+                window.location.href = 'checkout.html';
+            }
+        </script>
+    </body>
+</html>

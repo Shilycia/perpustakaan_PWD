@@ -1,0 +1,312 @@
+/* --- DETAIL PRODUCT SPECIFIC STYLES --- */
+body {
+    background-color: #ffffff;
+    color: #111;
+    /* FIX: Dihapus padding dari body agar footer tidak terhimpit */
+}
+
+main.container {
+    padding: 40px 0;
+    /* FIX: Padding dipindah ke container utama konten */
+}
+
+hr.divider {
+    border: none;
+    border-top: 1px solid #e5e5e5;
+    margin: 60px 0;
+}
+.product-essential {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 50px;
+}
+.product-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.main-image {
+    background-color: #f5f5f5;
+}
+.thumbnail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+.brand-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 5px;
+}
+.price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #800000;
+    margin-bottom: 30px;
+}
+.option-group {
+    margin-bottom: 25px;
+}
+.option-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #666;
+    display: block;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+.color-picker {
+    display: flex;
+    gap: 12px;
+}
+.color-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    position: relative;
+    background: none;
+}
+.color-dot.active::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 1px solid #111;
+    border-radius: 50%;
+}
+.size-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.size-guide {
+    font-size: 0.7rem;
+    color: #888;
+    text-decoration: underline;
+}
+.size-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+.size-btn {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    padding: 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.size-btn:hover:not(:disabled) {
+    border-color: #111;
+}
+.size-btn.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+.size-btn.disabled {
+    color: #ccc;
+    background: #f9f9f9;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+.description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 25px;
+}
+.features-list {
+    list-style: none;
+    margin-bottom: 35px;
+}
+.features-list li {
+    font-size: 0.85rem;
+    color: #333;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.features-list i {
+    color: #555;
+    font-size: 0.9rem;
+}
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.btn-dark {
+    background: #111;
+    color: #fff;
+}
+.btn-red {
+    background: #7a0000;
+    color: #fff;
+}
+.btn:hover {
+    opacity: 0.9;
+}
+.share-actions {
+    display: flex;
+    gap: 30px;
+    font-size: 0.75rem;
+    color: #666;
+}
+.share-actions span {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.marketing-features {
+    margin-top: 60px;
+    text-align: center;
+}
+.marketing-features h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 30px;
+}
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+/* --- FEATURE CARDS WITH HOVER EFFECT --- */
+.feature-card {
+    background: #ffffff;
+    padding: 30px 20px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    /* Box shadow di state normal */
+    transition: all 0.3s ease;
+    /* Transisi halus */
+    cursor: default;
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+    color: #7a0000;
+    transition: color 0.3s ease;
+}
+
+.feature-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.feature-card p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+/* Hover States */
+.feature-card:hover {
+    background: #1c1c1c;
+    color: #ffffff;
+    transform: translateY(-5px);
+    /* Sedikit naik saat di-hover */
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    /* Shadow lebih kuat */
+}
+
+.feature-card:hover .feature-icon {
+    color: #ff4d4d;
+    /* Ikon jadi merah terang */
+}
+
+.feature-card:hover p {
+    color: #ccc;
+    /* Teks deskripsi jadi terang */
+}
+.recommendations .rec-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+.recommendations h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+.view-collection {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #111;
+    text-decoration: underline;
+    letter-spacing: 0.5px;
+}
+.rec-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+.product-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+}
+.card-img {
+    background: #f5f5f5;
+    overflow: hidden;
+}
+.card-img img {
+    transition: transform 0.3s ease;
+}
+.product-card:hover .card-img img {
+    transform: scale(1.03);
+}
+.card-brand {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #222;
+    margin-top: 5px;
+}
+.card-price {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #7a0000;
+}
+@media (max-width: 900px) {
+    .product-essential {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    .rec-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}

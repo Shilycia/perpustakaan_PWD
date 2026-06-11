@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Product Detail</title>
+        <link rel="stylesheet" href="../../public/style/global.css">
+        <link rel="stylesheet" href="../../public/style/detailproduct.css">
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script src="../../data/db.js"></script>
+    </head>
+    <body>
+        <main class="container">
+            <section class="product-essential" id="product-container" style="display:none;">
+                <div class="product-gallery">
+                    <div class="main-image">
+                        <img id="mainImg" src="" alt="Product">
+                    </div>
+                </div>
+
+                <div class="product-details">
+                    <h1 class="brand-title" id="prodName">Loading...</h1>
+                    <p class="price" id="prodPrice">Rp 0</p>
+
+                    <div class="option-group">
+                        <span class="option-label">CATEGORY:
+                            <span id="prodCategory"></span></span>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="size-header">
+                            <span class="option-label">SELECT SIZE (UK)</span>
+                        </div>
+                        <div class="size-grid" id="sizeGrid">
+                            <button class="size-btn active">S</button>
+                            <button class="size-btn">M</button>
+                            <button class="size-btn">L</button>
+                            <button class="size-btn">XL</button>
+                        </div>
+                    </div>
+
+                    <p class="description" id="prodDesc">Loading description...</p>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-dark" onclick="addToCartHandler()">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            ADD TO CART</button>
+                        <button class="btn btn-red" onclick="buyNowHandler()">COMPLETE PURCHASE</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <iframe src="../component/footer.html" id="footer-frame" scrolling="no"></iframe>
+
+        <script>
+        let currentProduct = null;
+        let selectedSize = '';
+        let selectedSizeIndex = 0; // Menyimpan index untuk dikali 5000
+        let finalPrice = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            
+            const db = window.vibesDB || (window.parent && window.parent.vibesDB);
+            if(!id || !db) {
+                document.body.innerHTML = "<h1>Product Not Found</h1><a href='katalog.html'>Back to Shop</a>";
+                return;
+            }
+
+            currentProduct = db.getProduct(id);
+            if(!currentProduct) {
+                document.body.innerHTML = "<h1>Product Not Found</h1><a href='katalog.html'>Back to Shop</a>";
+                return;
+            }
+
+            // --- Populate Basic Data ---
+            document.getElementById('product-container').style.display = 'grid';
+            document.getElementById('mainImg').src = currentProduct.image;
+            document.getElementById('prodName').innerText = currentProduct.name;
+            document.getElementById('prodCategory').innerText = currentProduct.category;
+            document.getElementById('prodDesc').innerText = currentProduct.desc;
+
+            // --- Generate Size Buttons Dinamis ---
+            // Jika sepatu gunakan angka, jika baju gunakan huruf
+            const defaultSizes = currentProduct.category === 'Footwear' 
+                ? ['40', '41', '42', '43', '44', '45'] 
+                : ['S', 'M', 'L', 'XL', 'XXL'];
+            
+            const productSizes = currentProduct.sizes || defaultSizes;
+            selectedSize = productSizes[0]; // Set ukuran paling kecil sebagai default
+            selectedSizeIndex = 0;
+
+            const sizeGrid = document.getElementById('sizeGrid');
+            sizeGrid.innerHTML = ''; 
+            
+            productSizes.forEach((sz, index) => {
+                const btn = document.createElement('button');
+                btn.className = `size-btn ${index === 0 ? 'active' : ''}`;
+                btn.innerText = sz;
+                
+                // Event Click untuk Size
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    selectedSize = sz;
+                    selectedSizeIndex = index; // Simpan urutan size
+                    
+                    // Panggil fungsi pembaruan harga UI
+                    updatePriceUI();
+                };
+                sizeGrid.appendChild(btn);
+            });
+
+            // Set UI harga saat halaman pertama kali dimuat
+            updatePriceUI();
+        });
+
+        // update ui tampilan harga
+        function updatePriceUI() {
+            const basePrice = currentProduct.price;
+            const extraPrice = selectedSizeIndex * 5000;
+            
+            // Harga final yang akan direkam ke database keranjang (cart)
+            finalPrice = basePrice + extraPrice; 
+            
+            // Format UI menggunakan Ternary Operator
+            document.getElementById('prodPrice').innerText = selectedSizeIndex > 0 
+                ? `Rp ${basePrice.toLocaleString('id-ID')} + Rp ${extraPrice.toLocaleString('id-ID')}` 
+                : `Rp ${basePrice.toLocaleString('id-ID')}`;
+        }
+
+        // Fungsi Add to Cart
+        function addToCartHandler() {
+            const db = window.vibesDB || (window.parent && window.parent.vibesDB);
+            const user = db ? db.getCurrentUser() : null;
+            
+            if(!user) {
+                alert("Silahkan login terlebih dahulu untuk menambah ke keranjang.");
+                if(window.parent && window.parent.toggleLoginModal) {
+                    window.parent.toggleLoginModal();
+                }
+                return;
+            }
+            
+            // Kirim finalPrice ke db.js agar harga tambahan terekam di keranjang
+            db.addToCart(currentProduct, 1, selectedSize, finalPrice);
+            alert(`${currentProduct.name} ukuran ${selectedSize} berhasil ditambahkan ke Cart!`);
+        }
+
+        // Fungsi Beli Langsung
+        function buyNowHandler() {
+            addToCartHandler();
+            // Arahkan frame konten ke halaman cart
+            window.parent.document.querySelector('iframe[name=content]').src = './src/page/cart.html';
+        }
+    </script>
+    </body>
+</html>

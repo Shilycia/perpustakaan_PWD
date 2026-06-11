@@ -1,0 +1,297 @@
+/* --- DASHBOARD SPECIFIC STYLES --- */
+body {
+    background-color: #ffffff;
+    color: #111111;
+    overflow-x: hidden;
+}
+
+.section-container {
+    margin-top: 60px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.view-all {
+    color: #666;
+    font-size: 0.85rem;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* Hero Section */
+.hero-section {
+    width: 80vw;
+    height: 80vh;
+    min-height: 500px;
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url("https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1200") no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    padding-left: 10%;
+    position: relative;
+    justify-self: center;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.hero-content {
+    color: #ffffff;
+    max-width: 500px;
+}
+
+.hero-subtitle {
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 25px;
+    letter-spacing: -1px;
+}
+
+.hero-title span {
+    color: #a3a3a3;
+}
+
+.btn-primary {
+    display: inline-block;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 12px 24px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #f0f0f0;
+}
+
+/* Trending Categories */
+.trending-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-items: stretch;
+}
+
+.card {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    min-height: 250px;
+}
+
+.card-large {
+    background-image: url("https://images.unsplash.com/photo-1544923246-77307dd654cb?q=80&w=600");
+    height: 100%;
+    min-height: 400px;
+}
+
+.card-wide {
+    background-image: url("https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=600");
+    grid-column: span 2;
+    min-height: 200px;
+}
+
+.card-small-1 {
+    background-image: url("https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=400");
+    min-height: 180px;
+}
+
+.card-small-2 {
+    background-image: url("https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=400");
+    min-height: 180px;
+}
+
+.trending-right-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 15px;
+}
+
+.card-content {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.card-content h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.card-content p {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-top: 2px;
+}
+
+/* Featured Drops */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-image {
+    width: 100%;
+    height: 320px;
+    background-color: #f7f7f7;
+    border-radius: 4px;
+    background-size: cover;
+    background-position: center;
+}
+
+.img-p1 {
+    background-image: url("https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=400");
+}
+.img-p2 {
+    background-image: url("https://images.unsplash.com/photo-1517423568366-8b83523034fd?q=80&w=400");
+}
+.img-p3 {
+    background-image: url("https://images.unsplash.com/photo-1548883354-7622d03aca27?q=80&w=400");
+}
+.img-p4 {
+    background-image: url("https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=400");
+}
+
+.product-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 12px;
+    font-size: 0.85rem;
+}
+
+.product-info h4 {
+    font-weight: 700;
+    margin-bottom: 2px;
+    letter-spacing: -0.3px;
+}
+
+.product-desc {
+    color: #777;
+    font-size: 0.8rem;
+}
+
+.price {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Newsletter Banner */
+.newsletter-banner {
+    margin: 60px 0;
+    display: flex;
+    background-color: #660000;
+    color: #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
+    min-height: 280px;
+}
+
+.newsletter-left {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.newsletter-left h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+}
+
+.newsletter-left p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-bottom: 25px;
+    line-height: 1.4;
+    max-width: 400px;
+}
+
+.newsletter-form {
+    display: flex;
+    max-width: 400px;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background-color: #4a0000;
+    color: #ffffff;
+    font-size: 0.85rem;
+}
+
+.newsletter-form input::placeholder {
+    color: #a37a7a;
+}
+
+.newsletter-form button {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 0 24px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.newsletter-right {
+    flex: 1;
+    background: url("https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600") no-repeat center center/cover;
+}
+
+@media (max-width: 768px) {
+    .trending-grid {
+        grid-template-columns: 1fr;
+    }
+    .trending-right-grid {
+        grid-template-columns: 1fr;
+    }
+    .card-wide {
+        grid-column: span 1;
+    }
+    .newsletter-banner {
+        flex-direction: column;
+    }
+    .newsletter-right {
+        height: 200px;
+    }
+    .hero-title {
+        font-size: 2.2rem;
+    }
+}

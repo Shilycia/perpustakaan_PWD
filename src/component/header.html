@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../public/style/global.css">
+    <link rel="stylesheet" href="../../public/style/navbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-left">
+            <div class="logo">
+                <img src="../../public/img/logo.png" alt="Logo VIBES" onclick="window.parent.document.querySelector('iframe[name=content]').src='./src/page/dashboard.html'" style="cursor:pointer;">
+            </div>
+            <nav class="nav-menu">
+                <a href="../page/dashboard.html" target="content" class="nav-link">Home</a>
+                <a href="../page/katalog.html" target="content" class="nav-link">Shop</a>
+                <a href="../page/history.html" target="content" class="nav-link">Orders</a>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <div class="search-container">
+                <input type="text" placeholder="SEARCH ARCHIVE" class="search-input">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+
+            <button class="icon-btn" aria-label="Cart" onclick="window.parent.document.querySelector('iframe[name=content]').src='./src/page/cart.html'">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+            </button>
+
+            <button class="icon-btn" aria-label="Account" id="authBtn">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Foto Profil" class="profile-avatar" id="profileAvatar" style="display:none;">
+                
+                <i class="fa-regular fa-user" id="loginIcon" style="font-size: 1.2rem; color: #111; display:none;"></i>
+            </button>
+        </div>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const authBtn = document.getElementById('authBtn');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const loginIcon = document.getElementById('loginIcon');
+
+            // Ambil data user dari db.js yang ada di parent window
+            const db = window.vibesDB || (window.parent && window.parent.vibesDB);
+            const user = db ? db.getCurrentUser() : null;
+
+            if (user) {
+                // JIKA SUDAH LOGIN: Tampilkan Avatar profil
+                profileAvatar.style.display = 'block';
+                loginIcon.style.display = 'none';
+                
+                // Jika avatar diklik, navigasikan konten ke halaman Profile
+                authBtn.onclick = () => { 
+                    window.parent.document.querySelector('iframe[name=content]').src = './src/page/profile.html'; 
+                };
+            } else {
+                // JIKA BELUM LOGIN: Tampilkan Icon User standar
+                profileAvatar.style.display = 'none';
+                loginIcon.style.display = 'block';
+                
+                // Jika icon diklik, panggil modal popup login yang ada di index.html
+                authBtn.onclick = () => { 
+                    if(window.parent && typeof window.parent.toggleLoginModal === 'function') {
+                        window.parent.toggleLoginModal(); 
+                    } else {
+                        console.error("Modal login tidak ditemukan di parent window.");
+                    }
+                };
+            }
+        });
+    </script>
+</body>
+</html>

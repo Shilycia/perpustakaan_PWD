@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../public/style/global.css">
+        <link rel="stylesheet" href="../../public/style/dashboard.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+            rel="stylesheet">
+        <style>
+            /* Sedikit penyesuaian agar card bisa diklik */
+            .card {
+                cursor: pointer;
+                transition: transform 0.3s;
+            }
+            .card:hover {
+                transform: scale(1.02);
+                z-index: 10;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="hero-section" id="heroSection">
+            <div class="hero-content">
+                <p class="hero-subtitle">FALL / WINTER 2024</p>
+                <h1 class="hero-title">VIBES IN EVERY
+                    <span>THREAD</span></h1>
+                <a
+                    href="#"
+                    onclick="window.location.href='katalog.html'; return false;"
+                    class="btn-primary">EXPLORE COLLECTION</a>
+            </div>
+        </header>
+
+        <main class="container">
+            <section class="section-container">
+                <div class="section-header">
+                    <h2>TRENDING CATEGORIES</h2>
+                    <a href="katalog.html" class="view-all">View All Sets</a>
+                </div>
+
+                <div class="trending-grid">
+                    <div
+                        class="card card-large"
+                        id="cardOuterwear"
+                        onclick="window.location.href='katalog.html'">
+                        <div class="card-content">
+                            <h3>Outerwear Elite</h3>
+                            <p id="priceOuterwear">From Rp -</p>
+                        </div>
+                    </div>
+
+                    <div class="trending-right-grid">
+                        <div
+                            class="card card-wide"
+                            id="cardFootwear"
+                            onclick="window.location.href='katalog.html'">
+                            <div class="card-content">
+                                <h3>Architectural Soles</h3>
+                                <p id="priceFootwear">From Rp -</p>
+                            </div>
+                        </div>
+                        <div
+                            class="card card-small-1"
+                            id="cardAccessories"
+                            onclick="window.location.href='katalog.html'">
+                            <div class="card-content">
+                                <h3>ACCENTS</h3>
+                            </div>
+                        </div>
+                        <div
+                            class="card card-small-2"
+                            id="cardTops"
+                            onclick="window.location.href='katalog.html'">
+                            <div class="card-content">
+                                <h3>GRAPHICS</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-container">
+                <div class="section-header">
+                    <h2>FEATURED DROPS</h2>
+                </div>
+
+                <div class="products-grid" id="featured-grid"></div>
+            </section>
+
+            <section class="newsletter-banner">
+                <div class="newsletter-left">
+                    <h2>JOIN THE VIBES INNER CIRCLE</h2>
+                    <p>Early access to limited drops, exclusive editorial content, and member-only
+                        pricing.</p>
+                    <form class="newsletter-form" onsubmit="event.preventDefault();">
+                        <input type="email" placeholder="Email Address" required="required">
+                        <button type="submit">JOIN</button>
+                    </form>
+                </div>
+                <div class="newsletter-right"></div>
+            </section>
+        </main>
+
+        <iframe src="../component/footer.html" id="footer-frame" scrolling="no"></iframe>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Ambil data produk dari parent iframe (db.js)
+                const db = window.vibesDB || (window.parent && window.parent.vibesDB);
+                const allProducts = db
+                    ? db.getProducts()
+                    : [];
+
+                if (allProducts.length > 0) {
+
+                    // ==========================================
+                    // 1. HERO SECTION DINAMIS ========================================== Mengambil
+                    // gambar produk ID 6 (Biker Jacket) untuk background Hero
+                    const heroProduct = allProducts.find(p => p.id === 6) || allProducts[0];
+                    document
+                        .getElementById('heroSection')
+                        .style
+                        .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url('${heroProduct.image}')`;
+
+                    // ==========================================
+                    // 2. TRENDING CATEGORIES DINAMIS ==========================================
+                    const outerwear = allProducts.filter(p => p.category === 'Outerwear');
+                    const footwear = allProducts.filter(p => p.category === 'Footwear');
+                    const accessories = allProducts.filter(p => p.category === 'Accessories');
+                    const tops = allProducts.filter(p => p.category === 'Tops');
+
+                    // Helper untuk mencari harga termurah dalam sebuah kategori
+                    const getMinPrice = (arr) => Math.min(...arr.map(p => p.price));
+
+                    // Inject data ke Outerwear Card
+                    if (outerwear.length > 0) {
+                        document
+                            .getElementById('cardOuterwear')
+                            .style
+                            .backgroundImage = `url('${outerwear[0]
+                            .image}')`;
+                        document
+                            .getElementById('priceOuterwear')
+                            .innerText = `From Rp ${getMinPrice(outerwear).toLocaleString('id-ID')}`;
+                    }
+
+                    // Inject data ke Footwear Card
+                    if (footwear.length > 0) {
+                        document
+                            .getElementById('cardFootwear')
+                            .style
+                            .backgroundImage = `url('${footwear[0]
+                            .image}')`;
+                        document
+                            .getElementById('priceFootwear')
+                            .innerText = `From Rp ${getMinPrice(footwear).toLocaleString('id-ID')}`;
+                    }
+
+                    // Inject data ke Accessories Card
+                    if (accessories.length > 0) {
+                        document
+                            .getElementById('cardAccessories')
+                            .style
+                            .backgroundImage = `url('${accessories[0]
+                            .image}')`;
+                    }
+
+                    // Inject data ke Tops Card
+                    if (tops.length > 0) {
+                        // Mencari Graphic Tee jika ada, kalau tidak pakai Top pertama
+                        const graphicTee = tops.find(p => p.name.includes('Graphic')) || tops[0];
+                        document
+                            .getElementById('cardTops')
+                            .style
+                            .backgroundImage = `url('${graphicTee.image}')`;
+                    }
+
+                    // ==========================================
+                    // 3. FEATURED DROPS DINAMIS ==========================================
+                    const grid = document.getElementById('featured-grid');
+
+                    let featuredProducts = allProducts.filter(p => p.badge === 'New Arrival');
+                    if (featuredProducts.length < 4) {
+                        const additional = allProducts.filter(p => p.badge !== 'New Arrival');
+                        featuredProducts = featuredProducts
+                            .concat(additional)
+                            .slice(0, 4);
+                    } else {
+                        featuredProducts = featuredProducts.slice(0, 4);
+                    }
+
+                    let html = '';
+                    featuredProducts.forEach(p => {
+                        let badgeHtml = '';
+                        if (p.badge === 'New Arrival') {
+                            badgeHtml = `<span style="position:absolute; top:12px; left:12px; background:#111; color:#fff; padding:4px 8px; font-size:0.65rem; font-weight:700; text-transform:uppercase; border-radius:2px;">New Arrival</span>`;
+                        } else if (p.badge === 'Sold Out') {
+                            badgeHtml = `<span style="position:absolute; top:12px; left:12px; background:#cc0000; color:#fff; padding:4px 8px; font-size:0.65rem; font-weight:700; text-transform:uppercase; border-radius:2px;">Sold Out</span>`;
+                        } else if (p.badge === 'Limited Edition') {
+                            badgeHtml = `<span style="position:absolute; top:12px; left:12px; background:#444; color:#fff; padding:4px 8px; font-size:0.65rem; font-weight:700; text-transform:uppercase; border-radius:2px;">Limited Edition</span>`;
+                        }
+
+                        html += `
+                        <div class="product-card" onclick="window.location.href='detailproduct.html?id=${p
+                            .id}'" style="cursor:pointer;">
+                            <div class="product-image" style="background-image: url('${p
+                            .image}'); position: relative;">
+                                ${badgeHtml}
+                            </div>
+                            <div class="product-info">
+                                <div>
+                                    <h4>${p
+                            .name
+                            .toUpperCase()}</h4>
+                                    <p class="product-desc">${p
+                            .category}</p>
+                                </div>
+                                <span class="price">Rp ${p
+                            .price
+                            .toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>`;
+                    });
+
+                    grid.innerHTML = html;
+                } else {
+                    document
+                        .getElementById('featured-grid')
+                        .innerHTML = '<p>Gagal memuat produk. Pastikan sistem database aktif.</p>';
+                }
+            });
+        </script>
+    </body>
+</html>

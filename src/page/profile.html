@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Profile - Urban Velocity</title>
+        <link rel="stylesheet" href="../../public/style/global.css">
+        <link rel="stylesheet" href="../../public/style/profile.css">
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            /* Sidebar Smooth Scrolling Fix */
+            html {
+                scroll-behavior: smooth;
+            }
+
+            /* Modal for Address */
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.8);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+            }
+            .modal-card {
+                background: #ffffff;
+                width: 100%;
+                max-width: 500px;
+                border-radius: 8px;
+                padding: 30px;
+                box-sizing: border-box;
+            }
+            .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 15px;
+            }
+            .modal-header h3 {
+                font-size: 1.2rem;
+                font-weight: 800;
+                margin: 0;
+            }
+            .close-modal {
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: #555;
+            }
+        </style>
+    </head>
+    <body>
+
+        <main class="profile-container">
+
+            <!-- SIDEBAR -->
+            <aside class="profile-sidebar">
+                <div class="user-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                        alt="Profile Avatar"
+                        class="user-avatar">
+                    <div class="user-info">
+                        <h3 id="sidebarName">Loading...</h3>
+                        <p>Premium Member</p>
+                    </div>
+                </div>
+
+                <ul class="sidebar-menu">
+                    <li class="active">
+                        <a href="#account-details">
+                            <i class="fa-solid fa-user"></i>
+                            Account Details</a>
+                    </li>
+                    <li>
+                        <a href="#address-book">
+                            <i class="fa-solid fa-location-dot"></i>
+                            Address Book</a>
+                    </li>
+                    <li>
+                        <a href="history.html">
+                            <i class="fa-solid fa-box-open"></i>
+                            Order History</a>
+                    </li>
+                    <li>
+                        <a href="#settings">
+                            <i class="fa-solid fa-gear"></i>
+                            Settings</a>
+                    </li>
+                    <li class="logout">
+                        <a href="#" id="logoutBtn">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            Log Out</a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <div class="profile-content">
+
+                <!-- SECTION: ACCOUNT DETAILS -->
+                <section id="account-details">
+                    <div class="section-header">
+                        <h2>ACCOUNT DETAILS</h2>
+                    </div>
+
+                    <div class="account-grid">
+                        <form id="profileForm" class="profile-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>FIRST NAME</label>
+                                    <input type="text" id="profFirstName" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label>LAST NAME</label>
+                                    <input type="text" id="profLastName" value="">
+                                </div>
+                                <div class="form-group full">
+                                    <label>EMAIL ADDRESS</label>
+                                    <input
+                                        type="email"
+                                        id="profEmail"
+                                        value=""
+                                        readonly="readonly"
+                                        style="background-color: #f5f5f5; cursor: not-allowed;"
+                                        title="Email cannot be changed">
+                                </div>
+                                <div class="form-group full">
+                                    <label>PHONE NUMBER</label>
+                                    <input type="tel" id="profPhone" value="">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-dark">UPDATE PROFILE</button>
+                        </form>
+
+                        <!-- URBAN INSIDER CARD -->
+                        <div class="insider-card">
+                            <h3>URBAN INSIDER</h3>
+                            <p id="pointsDesc">Loading points...</p>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <div class="progress-labels">
+                                    <span id="currentPoints">0 PTS</span>
+                                    <span>10,000 PTS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION: ADDRESS BOOK -->
+                <section id="address-book">
+                    <div class="section-header">
+                        <h2>ADDRESS BOOK</h2>
+                        <a href="#" class="add-link" onclick="openAddressModal(); return false;">+ ADD NEW</a>
+                    </div>
+
+                    <div class="address-grid" id="addressGridContainer">
+                        <!-- Address Cards Rendered Here -->
+                    </div>
+                </section>
+
+                <!-- SECTION: SETTINGS -->
+                <section id="settings">
+                    <div class="section-header">
+                        <h2>SETTINGS</h2>
+                    </div>
+
+                    <div class="settings-list">
+                        <!-- HANYA DELETE ACCOUNT -->
+                        <div class="setting-item danger">
+                            <div class="setting-info">
+                                <h4>Delete Account</h4>
+                                <p>Permanently remove all data and history. This action is irreversible.</p>
+                            </div>
+                            <button class="btn-danger" id="deleteAccountBtn">DEACTIVATE</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="profile-banner">
+                    <h2>JOIN THE VIBES</h2>
+                    <p>Early access to limited edition drops and private runway events.</p>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- ADDRESS MODAL -->
+        <div id="addressModal" class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3>Address Form</h3>
+                    <button class="close-modal" onclick="closeAddressModal()">&times;</button>
+                </div>
+                <form id="addressForm">
+                    <input type="hidden" id="addrId">
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>Label (e.g. Home, Office)</label>
+                        <input type="text" id="addrLabel" required="required" style="width:100%;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>Street Address</label>
+                        <input type="text" id="addrStreet" required="required" style="width:100%;">
+                    </div>
+                    <div
+                        class="form-grid"
+                        style="margin-bottom:15px; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="addrCity" required="required" style="width:100%;">
+                        </div>
+                        <div class="form-group">
+                            <label>Province</label>
+                            <input type="text" id="addrProv" required="required" style="width:100%;">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:25px;">
+                        <label>Zip Code</label>
+                        <input type="text" id="addrZip" required="required" style="width:100%;">
+                    </div>
+                    <button type="submit" class="btn-dark" style="width:100%;">SAVE ADDRESS</button>
+                </form>
+            </div>
+        </div>
+
+        <iframe src="../component/footer.html" id="footer-frame" scrolling="no"></iframe>
+
+        <script>
+            let db, user;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            db = window.vibesDB || (window.parent && window.parent.vibesDB);
+            user = db ? db.getCurrentUser() : null;
+
+            if (!user) {
+                alert("Silakan login terlebih dahulu untuk mengakses profil.");
+                window.parent.document.querySelector('iframe[name=content]').src = './src/page/dashboard.html';
+                if (window.parent.toggleLoginModal) window.parent.toggleLoginModal();
+                return;
+            }
+
+            // Fill basic profile info
+            document.getElementById('sidebarName').textContent = user.firstName + ' ' + user.lastName;
+            document.getElementById('profFirstName').value = user.firstName || '';
+            document.getElementById('profLastName').value = user.lastName || '';
+            document.getElementById('profEmail').value = user.email || '';
+            document.getElementById('profPhone').value = user.phone || '';
+
+            // Render Modules
+            renderPoints();
+            renderAddresses();
+            setupScrollSpy();
+        });
+
+        // --- URBAN INSIDER POINTS ---
+        function renderPoints() {
+            const points = user.points || 0;
+            const target = 10000;
+            const remaining = Math.max(target - points, 0);
+            const percent = Math.min((points / target) * 100, 100);
+
+            document.querySelector('.progress-fill').style.width = percent + '%';
+            document.getElementById('pointsDesc').innerText = `You're ${remaining.toLocaleString('id-ID')} points away from Velocity Elite status.`;
+            document.getElementById('currentPoints').innerText = `${points.toLocaleString('id-ID')} PTS`;
+        }
+
+        // --- UPDATE PROFILE DETAILS ---
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            user.firstName = document.getElementById('profFirstName').value;
+            user.lastName = document.getElementById('profLastName').value;
+            user.phone = document.getElementById('profPhone').value;
+            
+            db.updateCurrentUser(user);
+            document.getElementById('sidebarName').textContent = user.firstName + ' ' + user.lastName;
+            alert('Profil Anda berhasil diperbarui!');
+        });
+
+        // --- ADDRESS BOOK ---
+        function renderAddresses() {
+            const grid = document.getElementById('addressGridContainer');
+            grid.innerHTML = '';
+            const addresses = user.addresses || [];
+            
+            if(addresses.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; color: #888;">Belum ada alamat tersimpan.</p>';
+                return;
+            }
+
+            addresses.forEach(addr => {
+                grid.innerHTML += `
+                    <div class="address-card ${addr.isDefault ? 'default' : ''}">
+                        ${addr.isDefault ? '<span class="badge-default">DEFAULT</span>' : ''}
+                        <h3>${addr.label}</h3>
+                        <p>${addr.street}<br>${addr.city}, ${addr.province}<br>${addr.zip}</p>
+                        <div class="address-actions">
+                            <div class="action-links">
+                                <a href="#" onclick="editAddress('${addr.id}'); return false;">Edit</a>
+                                <a href="#" class="remove" onclick="removeAddress('${addr.id}'); return false;">Remove</a>
+                            </div>
+                            ${!addr.isDefault ? `<button class="btn-small" onclick="setDefaultAddress('${addr.id}')">Set as Default</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openAddressModal(id = null) {
+            const modal = document.getElementById('addressModal');
+            const form = document.getElementById('addressForm');
+            
+            if(id) { // Edit Mode
+                const addr = user.addresses.find(a => a.id === id);
+                document.getElementById('addrId').value = addr.id;
+                document.getElementById('addrLabel').value = addr.label;
+                document.getElementById('addrStreet').value = addr.street;
+                document.getElementById('addrCity').value = addr.city;
+                document.getElementById('addrProv').value = addr.province;
+                document.getElementById('addrZip').value = addr.zip;
+            } else { // Create Mode
+                form.reset();
+                document.getElementById('addrId').value = '';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeAddressModal() {
+            document.getElementById('addressModal').style.display = 'none';
+        }
+
+        window.editAddress = (id) => openAddressModal(id);
+
+        window.removeAddress = (id) => {
+            if(confirm('Hapus alamat ini?')) {
+                user.addresses = user.addresses.filter(a => a.id !== id);
+                db.updateCurrentUser(user);
+                renderAddresses();
+            }
+        };
+
+        window.setDefaultAddress = (id) => {
+            user.addresses.forEach(a => a.isDefault = (a.id === id));
+            db.updateCurrentUser(user);
+            renderAddresses();
+        };
+
+        document.getElementById('addressForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('addrId').value;
+            const label = document.getElementById('addrLabel').value;
+            const street = document.getElementById('addrStreet').value;
+            const city = document.getElementById('addrCity').value;
+            const prov = document.getElementById('addrProv').value;
+            const zip = document.getElementById('addrZip').value;
+
+            if(!user.addresses) user.addresses = [];
+
+            if(id) { // Update
+                const index = user.addresses.findIndex(a => a.id === id);
+                if(index > -1) user.addresses[index] = { ...user.addresses[index], label, street, city, province:prov, zip };
+            } else { // Insert New
+                const isDefault = user.addresses.length === 0;
+                user.addresses.push({ id: 'addr_' + Date.now(), label, street, city, province:prov, zip, isDefault });
+            }
+
+            db.updateCurrentUser(user);
+            renderAddresses();
+            closeAddressModal();
+        });
+
+        // --- DELETE ACCOUNT ---
+        document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+            if(confirm("Apakah Anda yakin ingin menghapus akun Anda secara permanen? Data yang telah dihapus tidak dapat dikembalikan!")) {
+                const users = db.getUsers().filter(u => u.id !== user.id);
+                db.saveUsers(users);
+                db.logout();
+                alert("Akun Anda telah berhasil dihapus.");
+                window.parent.location.reload();
+            }
+        });
+
+        // --- LOG OUT ---
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            db.logout();
+            alert('Anda telah berhasil keluar.');
+            if (window.parent.document.querySelector('iframe[name="header"]')) {
+                window.parent.document.querySelector('iframe[name="header"]').contentWindow.location.reload();
+            }
+            window.location.href = 'dashboard.html';
+        });
+
+        // --- SCROLL SPY & SIDEBAR NAVIGATION ---
+        function setupScrollSpy() {
+            // Smooth scroll click
+            document.querySelectorAll('.sidebar-menu a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    if(targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Update active state on scroll
+            window.addEventListener('scroll', () => {
+                let scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+                document.querySelectorAll('section[id]').forEach(section => {
+                    // Offset -150 to trigger state change a bit earlier
+                    if (section.offsetTop - 150 <= scrollPosition && (section.offsetTop + section.offsetHeight) > scrollPosition) {
+                        document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+                        const link = document.querySelector(`.sidebar-menu a[href="#${section.id}"]`);
+                        if(link) link.parentElement.classList.add('active');
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
