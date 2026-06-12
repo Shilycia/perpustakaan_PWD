@@ -264,6 +264,22 @@
             setupScrollSpy();
         });
 
+        // --- FUNGSI VALIDASI ---
+        function isValidPhone(phone) {
+            // Menghapus spasi atau strip jika user mengetik (misal: 0812-3456-7890)
+            const cleanPhone = phone.replace(/[\s-]/g, '');
+            // Memastikan input adalah angka (bisa diawali +) dan panjangnya 9-15 digit
+            const phoneRegex = /^\+?\d{9,15}$/;
+            return phoneRegex.test(cleanPhone);
+        }
+
+        function isValidZip(zip) {
+            // Memastikan kode pos berisi tepat 5 angka (Standar Indonesia)
+            const zipRegex = /^\d{5}$/;
+            return zipRegex.test(zip.trim());
+        }
+        // -----------------------
+
         // --- URBAN INSIDER POINTS ---
         function renderPoints() {
             const points = user.points || 0;
@@ -279,9 +295,25 @@
         // --- UPDATE PROFILE DETAILS ---
         document.getElementById('profileForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            user.firstName = document.getElementById('profFirstName').value;
-            user.lastName = document.getElementById('profLastName').value;
-            user.phone = document.getElementById('profPhone').value;
+            const firstName = document.getElementById('profFirstName').value;
+            const lastName = document.getElementById('profLastName').value;
+            const phone = document.getElementById('profPhone').value;
+
+            // 1. Validasi Input Nama tidak boleh kosong atau cuma spasi
+            if (!firstName.trim() || !lastName.trim()) {
+                alert("Nama depan dan nama belakang tidak boleh kosong!");
+                return;
+            }
+
+            // 2. Validasi Nomor Telepon
+            if (!isValidPhone(phone)) {
+                alert("Nomor telepon tidak valid! Harap masukkan 9-15 digit angka.");
+                return;
+            }
+            
+            user.firstName = firstName.trim();
+            user.lastName = lastName.trim();
+            user.phone = phone.trim();
             
             db.updateCurrentUser(user);
             document.getElementById('sidebarName').textContent = user.firstName + ' ' + user.lastName;
@@ -365,6 +397,18 @@
             const prov = document.getElementById('addrProv').value;
             const zip = document.getElementById('addrZip').value;
 
+            // 1. Validasi form agar tidak berisi spasi kosong saja
+            if (!label.trim() || !street.trim() || !city.trim() || !prov.trim()) {
+                alert("Semua kolom alamat harus diisi dengan benar!");
+                return;
+            }
+
+            // 2. Validasi Kode Pos
+            if (!isValidZip(zip)) {
+                alert("Kode pos tidak valid! Harap masukkan 5 digit angka.");
+                return;
+            }
+
             if(!user.addresses) user.addresses = [];
 
             if(id) { // Update
@@ -429,6 +473,6 @@
                 });
             });
         }
-    </script>
+        </script>
 </body>
 </html>

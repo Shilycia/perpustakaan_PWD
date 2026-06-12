@@ -275,7 +275,7 @@ const vibesDB = {
             items: cart,
             total: subtotal + 45000 + (subtotal * 0.11),
             status: 'WAITING PAYMENT',
-            date: new Date().toLocaleDateString('en-US', {
+            date: new Date().toLocaleDateString('id-ID', {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric'

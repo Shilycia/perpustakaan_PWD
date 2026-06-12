@@ -182,7 +182,7 @@
                     </div>
                     <form id="loginForm">
                         <div class="form-group-auth">
-                            <label>Username/Email</label>
+                            <label>Email</label>
                             <input type="text" id="loginEmail" required="required">
                         </div>
                         <div class="form-group-auth">
@@ -217,7 +217,7 @@
                     </div>
                     <form id="registerForm">
                         <div class="form-group-auth">
-                            <label>Username/Email</label>
+                            <label>Email</label>
                             <input type="text" id="regEmail" required="required">
                         </div>
                         <div class="form-group-auth">
@@ -294,6 +294,20 @@
                 }
             }
 
+            // --- FUNGSI VALIDASI ---
+            function isValidEmail(email) {
+                // Regex untuk format email standar
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function isValidPassword(password) {
+                // Regex: Min 5 char, 1 huruf besar, 1 huruf kecil, 1 angka, 1 spesial char
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{5,}$/;
+                return passwordRegex.test(password);
+            }
+            // -----------------------
+
             // AUTH LOGIC INTEGRATION
             document
                 .getElementById('loginForm')
@@ -305,6 +319,13 @@
                     const pwd = document
                         .getElementById('loginPwd')
                         .value;
+
+                    // Validasi Email di Login (Opsional, tapi disarankan)
+                    if (!isValidEmail(email)) {
+                        alert("Format email tidak valid!");
+                        return;
+                    }
+
                     const result = vibesDB.loginUser(email, pwd);
                     if (result.success) {
                         alert(result.message);
@@ -334,8 +355,24 @@
                         .getElementById('regConfirmPwd')
                         .value;
 
+                    // 1. Validasi Format Email
+                    if (!isValidEmail(email)) {
+                        alert("Format email tidak valid! (Contoh: nama@domain.com)");
+                        return;
+                    }
+
+                    // 2. Validasi Kriteria Password
+                    if (!isValidPassword(pwd)) {
+                        alert(
+                            "Password tidak memenuhi syarat!\nMinimal 5 karakter, mengandung 1 huruf besar," +
+                            " 1 huruf kecil, 1 angka, dan 1 karakter spesial."
+                        );
+                        return;
+                    }
+
+                    // 3. Validasi Kesamaan Password
                     if (pwd !== confirmPwd) {
-                        alert("Password tidak sama!");
+                        alert("Konfirmasi password tidak sama!");
                         return;
                     }
 
